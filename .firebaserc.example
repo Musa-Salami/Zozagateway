@@ -1,0 +1,15 @@
+# .firebaserc - Firebase Project Configuration
+# This file will be created automatically when you run 'firebase init'
+# or you can create it manually with your Firebase project ID
+
+# Example structure:
+# {
+#   "projects": {
+#     "default": "your-project-id-here"
+#   }
+# }
+
+# To get your project ID:
+# 1. Go to https://console.firebase.google.com
+# 2. Create a new project or select existing one
+# 3. Your project ID is shown in the project settings

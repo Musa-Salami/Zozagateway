@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoza Gateway Snacks - Freshly Made Snacks</title>
+  <link rel="icon" type="image/png" href="Logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#FFF7ED',100:'#FFEDD5',200:'#FED7AA',300:'#FDBA74',400:'#FB923C',500:'#F97316',600:'#EA580C',700:'#C2410C',800:'#9A3412',900:'#7C2D12' }
+          },
+          fontFamily: { heading: ['Plus Jakarta Sans','sans-serif'], body: ['Inter','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .page { display: none; }
+    .page.active { display: block; }
+    @keyframes float { 
+      0%,100%{transform:translateY(0) rotate(0deg)} 
+      50%{transform:translateY(-20px) rotate(5deg)} 
+    }
+    @keyframes fadeInUp { 
+      from{opacity:0;transform:translateY(30px)} 
+      to{opacity:1;transform:translateY(0)} 
+    }
+    @keyframes slideInRight { 
+      from{transform:translateX(100%)} 
+      to{transform:translateX(0)} 
+    }
+    @keyframes bounceIn { 
+      0%{transform:scale(0.3);opacity:0} 
+      50%{transform:scale(1.05)} 
+      70%{transform:scale(.95)} 
+      100%{transform:scale(1);opacity:1} 
+    }
+    @keyframes pulse { 
+      0%,100%{opacity:1} 
+      50%{opacity:.5} 
+    }
+    @keyframes countUp { 
+      from{opacity:0;transform:translateY(10px)} 
+      to{opacity:1;transform:translateY(0)} 
+    }
+    @keyframes gradient-x {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes blob {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(20px, -50px) scale(1.1); }
+      50% { transform: translate(-20px, 20px) scale(0.9); }
+      75% { transform: translate(50px, 50px) scale(1.05); }
+    }
+    @keyframes mesh {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+      20%, 40%, 60%, 80% { transform: translateX(10px); }
+    }
+    .animate-float { animation: float 6s ease-in-out infinite; }
+    .animate-float-d { animation: float 6s ease-in-out infinite; animation-delay:2s; }
+    .animate-float-s { animation: float 8s ease-in-out infinite; animation-delay:4s; }
+    .animate-fadeInUp { animation: fadeInUp .6s ease-out forwards; }
+    .animate-slideInRight { animation: slideInRight .3s ease-out; }
+    .animate-bounceIn { animation: bounceIn .6s ease-out; }
+    .animate-gradient-x { 
+      background-size: 200% 200%; 
+      animation: gradient-x 3s ease infinite; 
+    }
+    .delay-100 { animation-delay:.1s; }
+    .delay-200 { animation-delay:.2s; }
+    .delay-300 { animation-delay:.3s; }
+    .delay-400 { animation-delay:.4s; }
+    .text-gradient { 
+      background: linear-gradient(135deg, #F97316, #C2410C); 
+      -webkit-background-clip:text; 
+      -webkit-text-fill-color:transparent; 
+      background-clip:text; 
+    }
+    
+    /* Enhanced Hero Styles */
+    .hero-banner { 
+      position: relative;
+      background-attachment: fixed;
+    }
+    .shape-blob {
+      position: absolute;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      filter: blur(60px);
+      opacity: 0.15;
+      animation: blob 12s ease-in-out infinite;
+    }
+    .shape-blob-1 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(45deg, #F97316, #FB923C);
+      top: -100px;
+      left: -100px;
+    }
+    .shape-blob-2 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #FDBA74, #FED7AA);
+      top: 50%;
+      right: -50px;
+      animation-delay: 4s;
+    }
+    .shape-blob-3 {
+      width: 350px;
+      height: 350px;
+      background: linear-gradient(225deg, #EA580C, #F97316);
+      bottom: -50px;
+      left: 50%;
+      animation-delay: 8s;
+    }
+    .bg-gradient-mesh {
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(253, 186, 116, 0.1) 0%, transparent 50%);
+      animation: mesh 8s ease-in-out infinite;
+    }
+    .glass { background:rgba(255,255,255,.8); backdrop-filter:blur(12px); }
+    .dark .glass { background:rgba(15,23,42,.8); }
+    .card-hover { transition: all .3s ease; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.1); }
+    .btn-press:active { transform: scale(.97); }
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background:#f1f5f9; border-radius:4px; }
+    ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
+    .dark ::-webkit-scrollbar-track { background:#1e293b; }
+    .dark ::-webkit-scrollbar-thumb { background:#475569; }
+    .cart-badge { animation: bounceIn .4s ease-out; }
+    .product-img { transition: transform .5s ease; }
+    .product-img:hover { transform: scale(1.08); }
+    .sidebar-link { transition: all .2s ease; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(249,115,22,.15); color: #F97316; }
+    .stat-card { transition: all .3s ease; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.08); }
+    .chart-bar { transition: height .8s ease; }
+    input:focus, select:focus, textarea:focus { outline:none; ring: 2px; border-color: #F97316; box-shadow: 0 0 0 3px rgba(249,115,22,.15); }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+<!-- ==================== HEADER ==================== -->
+<header id="main-header" class="sticky top-0 z-50 glass border-b border-gray-200 dark:border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between py-4 transition-all duration-300" id="header-content">
+      <!-- Logo -->
+      <a href="#" onclick="navigate('home')" class="flex items-center gap-2 group">
+        <img id="main-logo" src="Logo.png" alt="Zoza Gateway Snacks" class="h-48 w-auto group-hover:scale-105 transition-all duration-300" />
+      </a>
+      <!-- Nav Links (Desktop) -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#" onclick="navigate('home')" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="home">Home</a>
+        <a href="#" onclick="navigate('menu')" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="menu">Menu</a>
+        <a href="#" onclick="navigate('about')" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="about">About</a>
+        <a href="#" onclick="navigate('contact')" class="nav-link text-sm font-medium hover:text-brand-500 transition-colors" data-page="contact">Contact</a>
+      </nav>
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Search -->
+        <button onclick="toggleSearch()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Search">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <!-- Dark Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Toggle dark mode">
+          <svg id="sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <!-- Cart -->
+        <button onclick="navigate('cart')" class="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Cart">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+          <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-brand-500 text-white text-xs font-bold rounded-full flex items-center justify-center cart-badge" style="display:none;">0</span>
+        </button>
+        <!-- Admin Link -->
+        <a href="#" onclick="navigate('admin')" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-medium rounded-lg hover:opacity-90 transition-opacity">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Admin
+        </a>
+        <!-- User -->
+        <a href="#" onclick="navigate('signin')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors" title="Sign In">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </a>
+        <!-- Mobile Menu -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Search Bar -->
+  <div id="search-bar" class="hidden border-t border-gray-200 dark:border-slate-800 py-3 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="relative">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <input type="text" placeholder="Search snacks..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 dark:border-slate-800 py-4 px-4">
+    <nav class="flex flex-col gap-2">
+      <a href="#" onclick="navigate('home');toggleMobileMenu()" class="px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium">Home</a>
+      <a href="#" onclick="navigate('menu');toggleMobileMenu()" class="px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium">Menu</a>
+      <a href="#" onclick="navigate('about');toggleMobileMenu()" class="px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium">About</a>
+      <a href="#" onclick="navigate('contact');toggleMobileMenu()" class="px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium">Contact</a>
+      <a href="#" onclick="navigate('admin');toggleMobileMenu()" class="px-4 py-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-sm font-medium">Admin Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div id="page-home" class="page active">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden py-20 lg:py-32 hero-banner">
+    <!-- Animated Background Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 dark:from-slate-950 dark:via-orange-950/20 dark:to-slate-900">
+      <div class="absolute inset-0 bg-gradient-mesh"></div>
+      <div class="absolute inset-0 backdrop-blur-3xl opacity-30"></div>
+    </div>
+    
+    <!-- Animated Shapes -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="shape-blob shape-blob-1"></div>
+      <div class="shape-blob shape-blob-2"></div>
+      <div class="shape-blob shape-blob-3"></div>
+    </div>
+    
+    <!-- Floating Snack Icons with Better Effects -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <span class="absolute text-6xl top-20 left-[10%] animate-float opacity-40 blur-[0.5px] hover:blur-0 transition-all">🍪</span>
+      <span class="absolute text-5xl top-40 right-[15%] animate-float-d opacity-35 blur-[0.5px] hover:blur-0 transition-all">🍿</span>
+      <span class="absolute text-7xl bottom-20 left-[20%] animate-float-s opacity-30 blur-[0.5px] hover:blur-0 transition-all">🥜</span>
+      <span class="absolute text-4xl top-32 right-[35%] animate-float opacity-25 blur-[0.5px] hover:blur-0 transition-all">🍬</span>
+      <span class="absolute text-5xl bottom-32 right-[10%] animate-float-d opacity-35 blur-[0.5px] hover:blur-0 transition-all">🥤</span>
+      <span class="absolute text-6xl top-16 left-[50%] animate-float-s opacity-20 blur-[0.5px] hover:blur-0 transition-all">🍟</span>
+      <span class="absolute text-5xl bottom-10 left-[45%] animate-float opacity-25 blur-[0.5px] hover:blur-0 transition-all">🥨</span>
+      <span class="absolute text-4xl top-[60%] right-[25%] animate-float-d opacity-30 blur-[0.5px] hover:blur-0 transition-all">🍩</span>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-4xl mx-auto">
+        <!-- Badge with Glow Effect -->
+        <div class="inline-flex items-center gap-2 px-5 py-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-orange-200/50 dark:border-orange-500/30 text-brand-600 dark:text-brand-400 rounded-full text-sm font-semibold mb-8 animate-fadeInUp shadow-lg shadow-orange-500/20 hover:shadow-xl hover:shadow-orange-500/30 transition-all hover:scale-105">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span>
+          </span>
+          Fresh snacks delivered daily
+        </div>
+        
+        <!-- Main Heading with Enhanced Gradient -->
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold font-heading mb-8 animate-fadeInUp delay-100 leading-tight" style="animation-fill-mode:both;">
+          <span class="inline-block hover:scale-105 transition-transform">Freshly Made</span><br/>
+          <span class="bg-gradient-to-r from-brand-500 via-orange-600 to-amber-500 bg-clip-text text-transparent animate-gradient-x inline-block hover:scale-105 transition-transform">Snacks, Delivered</span><br/>
+          <span class="inline-block hover:scale-105 transition-transform">to You</span>
+        </h1>
+        
+        <!-- Description with Glass Effect -->
+        <div class="relative mb-12 animate-fadeInUp delay-200" style="animation-fill-mode:both;">
+          <p class="text-lg sm:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed font-medium">
+            Discover our <span class="text-brand-600 dark:text-brand-400 font-bold">handcrafted collection</span> of delicious snacks. From crispy chips to decadent cookies, satisfaction is just a click away.
+          </p>
+        </div>
+        
+        <!-- CTA Buttons with Enhanced Effects -->
+        <div class="flex flex-col items-center gap-6 animate-fadeInUp delay-300 mb-12" style="animation-fill-mode:both;">
+          <!-- Primary Action Button - Larger and More Prominent -->
+          <button onclick="navigate('menu')" class="group relative w-full sm:w-auto min-w-[280px] px-10 py-6 bg-gradient-to-r from-brand-500 via-orange-600 to-brand-500 hover:from-brand-600 hover:via-orange-700 hover:to-brand-600 text-white font-black rounded-2xl text-xl shadow-2xl shadow-brand-500/40 transition-all hover:shadow-3xl hover:shadow-brand-500/60 overflow-hidden hover:scale-105 bg-[length:200%_100%] hover:bg-[position:100%_0]" style="transition: all 0.4s ease;">
+            <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></span>
+            <span class="relative z-10 flex items-center justify-center gap-3">
+              <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
+              Order Now
+              <svg class="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            </span>
+          </button>
+          
+          <!-- Secondary Actions Row -->
+          <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+            <!-- WhatsApp Order -->
+            <a href="https://wa.me/c/2349039412203" target="_blank" class="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl text-base shadow-xl shadow-green-600/30 transition-all hover:shadow-2xl hover:shadow-green-600/50 flex items-center justify-center gap-3 overflow-hidden hover:scale-105">
+              <span class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></span>
+              <svg class="w-5 h-5 relative z-10 group-hover:rotate-12 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              <span class="relative z-10">WhatsApp Order</span>
+            </a>
+            
+            <!-- View Menu -->
+            <button onclick="navigate('menu')" class="group px-8 py-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl hover:bg-white dark:hover:bg-slate-800 font-bold rounded-xl text-base border-2 border-gray-300 dark:border-slate-600 hover:border-brand-500 dark:hover:border-brand-500 transition-all shadow-xl hover:shadow-2xl hover:scale-105">
+              <span class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Browse Menu
+              </span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Features with Glass Cards -->
+        <div class="flex flex-wrap items-center justify-center gap-6 animate-fadeInUp delay-400" style="animation-fill-mode:both;">
+          <div class="flex items-center gap-3 px-5 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <span class="flex items-center justify-center w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">✓</span>
+            <span class="font-semibold text-gray-700 dark:text-gray-300">Free delivery over ₦12,500</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <span class="flex items-center justify-center w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">✓</span>
+            <span class="font-semibold text-gray-700 dark:text-gray-300">Fresh daily</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <span class="flex items-center justify-center w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600 dark:text-purple-400">✓</span>
+            <span class="font-semibold text-gray-700 dark:text-gray-300">100+ snacks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Snacks -->
+  <section class="py-20 bg-white dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold font-heading mb-3">Featured Snacks</h2>
+        <p class="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">Our most popular handcrafted treats, loved by thousands</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="py-20 bg-gray-50 dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold font-heading mb-3">Browse by Category</h2>
+        <p class="text-gray-600 dark:text-gray-400">Find exactly what you're craving</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="categories-grid"></div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-20 bg-white dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold font-heading mb-3">How It Works</h2>
+        <p class="text-gray-600 dark:text-gray-400">Getting your snacks is as easy as 1-2-3</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center">
+          <div class="w-20 h-20 bg-brand-100 dark:bg-brand-900/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <span class="text-3xl">🔍</span>
+          </div>
+          <div class="inline-flex items-center justify-center w-8 h-8 bg-brand-500 text-white text-sm font-bold rounded-full mb-3">1</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Browse</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Explore our wide variety of freshly made snacks and find your favorites</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <span class="text-3xl">🛒</span>
+          </div>
+          <div class="inline-flex items-center justify-center w-8 h-8 bg-brand-500 text-white text-sm font-bold rounded-full mb-3">2</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Order</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Add items to your cart and checkout with our quick and secure payment</p>
+        </div>
+        <div class="text-center">
+          <div class="w-20 h-20 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <span class="text-3xl">😋</span>
+          </div>
+          <div class="inline-flex items-center justify-center w-8 h-8 bg-brand-500 text-white text-sm font-bold rounded-full mb-3">3</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Enjoy</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Receive your snacks fresh at your doorstep and enjoy every bite</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 bg-gray-50 dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold font-heading mb-3">What Our Customers Say</h2>
+        <p class="text-gray-600 dark:text-gray-400">Real reviews from real snack lovers</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800 card-hover">
+          <div class="flex items-center gap-1 mb-3 text-amber-400">★★★★★</div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">"The double chocolate cookies are absolutely divine! Fresh, chewy, and packed with chocolate. Best cookies I've ever ordered online."</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center font-bold text-brand-600 text-sm">SM</div><div><div class="font-semibold text-sm">Sarah M.</div><div class="text-xs text-gray-500">Verified Buyer</div></div></div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800 card-hover">
+          <div class="flex items-center gap-1 mb-3 text-amber-400">★★★★★</div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">"Fast delivery and the snack quality is unmatched. The mixed nut medley is my go-to for healthy snacking. Highly recommend ZozaGateway!"</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center font-bold text-green-600 text-sm">JD</div><div><div class="font-semibold text-sm">John D.</div><div class="text-xs text-gray-500">Verified Buyer</div></div></div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-gray-100 dark:border-slate-800 card-hover">
+          <div class="flex items-center gap-1 mb-3 text-amber-400">★★★★<span class="text-gray-300">★</span></div>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">"Love the variety! Ordered the gift pack for my team and everyone was impressed. The caramel popcorn was the star. Will order again!"</p>
+          <div class="flex items-center gap-3"><div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center font-bold text-purple-600 text-sm">AK</div><div><div class="font-semibold text-sm">Amina K.</div><div class="text-xs text-gray-500">Verified Buyer</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="py-20 bg-gradient-to-r from-brand-500 to-brand-700">
+    <div class="max-w-2xl mx-auto px-4 text-center text-white">
+      <h2 class="text-3xl sm:text-4xl font-bold font-heading mb-3">Stay in the Loop</h2>
+      <p class="text-brand-100 mb-8">Subscribe to get exclusive deals, new snack alerts, and 10% off your first order!</p>
+      <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-xl text-gray-900 text-sm border-0 focus:ring-2 focus:ring-white/50" />
+        <button onclick="showToast('Subscribed! Check your email for 10% off 🎉')" class="btn-press px-6 py-3 bg-white text-brand-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors text-sm">
+          Subscribe
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== MENU PAGE ==================== -->
+<div id="page-menu" class="page">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+      <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+        <a href="#" onclick="navigate('home')" class="hover:text-brand-500">Home</a>
+        <span>/</span>
+        <span class="text-gray-900 dark:text-white">Menu</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold font-heading mb-2">Our Snack Menu</h1>
+      <p class="text-gray-600 dark:text-gray-400">Browse our complete collection of handcrafted snacks</p>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-64 shrink-0">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 sticky top-24">
+          <h3 class="font-bold font-heading mb-4">Filters</h3>
+          <!-- Category Filter -->
+          <div class="mb-6">
+            <h4 class="text-sm font-semibold mb-3">Category</h4>
+            <div class="space-y-2" id="filter-categories"></div>
+          </div>
+          <!-- Price Range -->
+          <div class="mb-6">
+            <h4 class="text-sm font-semibold mb-3">Price Range</h4>
+            <div class="flex items-center gap-2">
+              <input type="number" placeholder="Min" class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm bg-transparent" />
+              <span class="text-gray-400">-</span>
+              <input type="number" placeholder="Max" class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm bg-transparent" />
+            </div>
+          </div>
+          <!-- Dietary -->
+          <div class="mb-6">
+            <h4 class="text-sm font-semibold mb-3">Dietary</h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" /> Vegan</label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" /> Gluten-Free</label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" /> Nut-Free</label>
+            </div>
+          </div>
+          <!-- Sort -->
+          <div>
+            <h4 class="text-sm font-semibold mb-3">Sort By</h4>
+            <select class="w-full px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm bg-transparent">
+              <option>Popular</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+            </select>
+          </div>
+        </div>
+      </aside>
+      <!-- Product Grid -->
+      <div class="flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" id="menu-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CART PAGE ==================== -->
+<div id="page-cart" class="page">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold font-heading mb-8">Shopping Cart</h1>
+    <div id="cart-empty" class="text-center py-20 hidden">
+      <div class="text-6xl mb-4">🛒</div>
+      <h2 class="text-2xl font-bold font-heading mb-2">Your cart is empty</h2>
+      <p class="text-gray-500 mb-6">Looks like you haven't added any snacks yet</p>
+      <button onclick="navigate('menu')" class="btn-press px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors">
+        Browse Menu
+      </button>
+    </div>
+    <div id="cart-content" class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-1 space-y-4" id="cart-items"></div>
+      <div class="lg:w-96 shrink-0">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 sticky top-24">
+          <h3 class="font-bold font-heading text-lg mb-4">Order Summary</h3>
+          <div class="space-y-3 text-sm mb-4">
+            <div class="flex justify-between"><span class="text-gray-500">Subtotal</span><span id="cart-subtotal" class="font-semibold">$0.00</span></div>
+            <div class="flex justify-between"><span class="text-gray-500">Delivery Fee</span><span id="cart-delivery" class="font-semibold">$3.99</span></div>
+            <div class="border-t border-gray-200 dark:border-slate-700 pt-3">
+              <div class="flex items-center gap-2 mb-3">
+                <input type="text" placeholder="Promo code" class="flex-1 px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-lg text-sm bg-transparent" />
+                <button class="px-4 py-2 bg-gray-100 dark:bg-slate-800 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">Apply</button>
+              </div>
+            </div>
+            <div class="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-slate-700 pt-3"><span>Total</span><span id="cart-total" class="text-brand-500">$0.00</span></div>
+          </div>
+          <button onclick="navigate('checkout')" class="btn-press w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">
+            Proceed to Checkout
+          </button>
+          <button onclick="navigate('menu')" class="w-full py-2.5 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mt-2 transition-colors">
+            ← Continue Shopping
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CHECKOUT PAGE ==================== -->
+<div id="page-checkout" class="page">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold font-heading mb-8">Checkout</h1>
+    <!-- Progress -->
+    <div class="flex items-center justify-center gap-4 mb-10">
+      <div id="step1-ind" class="flex items-center gap-2"><div class="w-8 h-8 bg-brand-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div><span class="text-sm font-medium hidden sm:inline">Delivery</span></div>
+      <div class="w-16 h-0.5 bg-gray-300 dark:bg-slate-700"></div>
+      <div id="step2-ind" class="flex items-center gap-2"><div class="w-8 h-8 bg-gray-200 dark:bg-slate-700 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">2</div><span class="text-sm font-medium text-gray-400 hidden sm:inline">Review</span></div>
+      <div class="w-16 h-0.5 bg-gray-300 dark:bg-slate-700"></div>
+      <div id="step3-ind" class="flex items-center gap-2"><div class="w-8 h-8 bg-gray-200 dark:bg-slate-700 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold">3</div><span class="text-sm font-medium text-gray-400 hidden sm:inline">Payment</span></div>
+    </div>
+    <!-- Form -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 sm:p-8">
+      <div id="checkout-step-1">
+        <h2 class="text-xl font-bold font-heading mb-6">Delivery Information</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div><label class="block text-sm font-medium mb-1.5">Full Name *</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="John Doe" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Phone *</label><input type="tel" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="+1 234 567 890" /></div>
+          <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1.5">Email *</label><input type="email" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="john@example.com" /></div>
+          <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1.5">Delivery Address *</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="123 Main St, Apt 4B" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">City *</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="New York" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Delivery Type</label><select class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent"><option>Delivery</option><option>Pickup</option></select></div>
+          <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1.5">Order Notes</label><textarea class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" rows="3" placeholder="Any special instructions..."></textarea></div>
+        </div>
+        <button onclick="goToCheckoutStep(2)" class="btn-press mt-6 w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors">Continue to Review →</button>
+      </div>
+      <div id="checkout-step-2" class="hidden">
+        <h2 class="text-xl font-bold font-heading mb-6">Order Review</h2>
+        <div id="checkout-items" class="space-y-3 mb-6"></div>
+        <div class="border-t border-gray-200 dark:border-slate-700 pt-4 space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-gray-500">Subtotal</span><span id="checkout-subtotal" class="font-semibold">$0.00</span></div>
+          <div class="flex justify-between"><span class="text-gray-500">Delivery</span><span class="font-semibold">$3.99</span></div>
+          <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200 dark:border-slate-700"><span>Total</span><span id="checkout-total" class="text-brand-500">$0.00</span></div>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button onclick="goToCheckoutStep(1)" class="flex-1 py-3 border border-gray-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">← Back</button>
+          <button onclick="goToCheckoutStep(3)" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm transition-colors">Continue to Payment →</button>
+        </div>
+      </div>
+      <div id="checkout-step-3" class="hidden">
+        <h2 class="text-xl font-bold font-heading mb-6">Payment</h2>
+        <div class="bg-gray-50 dark:bg-slate-800 rounded-xl p-6 mb-6">
+          <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1.5">Card Number</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900" placeholder="4242 4242 4242 4242" /></div>
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-sm font-medium mb-1.5">Expiry</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900" placeholder="MM/YY" /></div>
+              <div><label class="block text-sm font-medium mb-1.5">CVC</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-900" placeholder="123" /></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="goToCheckoutStep(2)" class="flex-1 py-3 border border-gray-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">← Back</button>
+          <button onclick="placeOrder()" class="flex-1 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm transition-colors">Place Order 🎉</button>
+        </div>
+      </div>
+      <div id="checkout-success" class="hidden text-center py-10">
+        <div class="text-6xl mb-4 animate-bounceIn">🎉</div>
+        <h2 class="text-2xl font-bold font-heading mb-2">Order Placed Successfully!</h2>
+        <p class="text-gray-500 mb-2">Thank you for your order</p>
+        <div class="inline-flex items-center gap-2 bg-gray-100 dark:bg-slate-800 rounded-lg px-4 py-2 text-sm font-mono font-bold mb-6" id="order-number">ZG-2A8F-KX9B</div>
+        <p class="text-sm text-gray-500 mb-6">We've sent a confirmation email with your order details.</p>
+        <button onclick="navigate('home')" class="btn-press px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors">Back to Home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ABOUT PAGE ==================== -->
+<div id="page-about" class="page">
+  <section class="py-20 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-slate-950 dark:to-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl sm:text-5xl font-extrabold font-heading mb-4">About <span class="text-gradient">Zoza Gateway Snacks</span></h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">We're on a mission to bring the joy of freshly made snacks to every doorstep, one delicious bite at a time.</p>
+    </div>
+  </section>
+  <section class="py-16 bg-white dark:bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-bold font-heading mb-4">Our Story</h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">Founded in 2024, Zoza Gateway Snacks started with a simple idea: everyone deserves access to high-quality, freshly made snacks without leaving their home.</p>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">What began as a small kitchen operation has grown into a full-scale snack production platform, serving thousands of happy customers daily with our handcrafted treats.</p>
+          <p class="text-gray-600 dark:text-gray-400">We source premium ingredients, bake fresh every day, and deliver with care. Every snack we make carries our promise of quality and taste.</p>
+        </div>
+        <div class="bg-gradient-to-br from-brand-100 to-amber-100 dark:from-brand-900/30 dark:to-amber-900/20 rounded-3xl p-12 text-center">
+          <div class="text-8xl mb-4">🍪</div>
+          <p class="text-brand-700 dark:text-brand-400 font-semibold text-lg">Made with love, delivered with care</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="py-16 bg-gray-50 dark:bg-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-gray-100 dark:border-slate-800 text-center card-hover">
+          <div class="text-4xl mb-4">🎯</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Our Mission</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">To make premium snacks accessible to everyone through a seamless digital ordering experience.</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-gray-100 dark:border-slate-800 text-center card-hover">
+          <div class="text-4xl mb-4">👁️</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Our Vision</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">To become the leading online snack platform, known for quality, freshness, and exceptional customer service.</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-gray-100 dark:border-slate-800 text-center card-hover">
+          <div class="text-4xl mb-4">💎</div>
+          <h3 class="text-xl font-bold font-heading mb-2">Our Values</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Quality ingredients, freshness guaranteed, customer first, and sustainability in everything we do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== CONTACT PAGE ==================== -->
+<div id="page-contact" class="page">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold font-heading mb-3">Get in Touch</h1>
+      <p class="text-gray-600 dark:text-gray-400">We'd love to hear from you. Send us a message!</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8">
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label class="block text-sm font-medium mb-1.5">Name *</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Your name" /></div>
+            <div><label class="block text-sm font-medium mb-1.5">Email *</label><input type="email" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="you@example.com" /></div>
+          </div>
+          <div><label class="block text-sm font-medium mb-1.5">Subject *</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="How can we help?" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Message *</label><textarea rows="5" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Your message..."></textarea></div>
+          <button onclick="showToast('Message sent! We\'ll get back to you shortly 📧')" class="btn-press w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">Send Message</button>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex items-start gap-4"><div class="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center text-xl shrink-0">📞</div><div><h3 class="font-semibold font-heading">Phone</h3><p class="text-sm text-gray-500">+1 (555) 123-4567</p></div></div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex items-start gap-4"><div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-xl shrink-0">📧</div><div><h3 class="font-semibold font-heading">Email</h3><p class="text-sm text-gray-500">hello@zozagateway.com</p></div></div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex items-start gap-4"><div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-xl shrink-0">📍</div><div><h3 class="font-semibold font-heading">Address</h3><p class="text-sm text-gray-500">123 Snack Street, Flavor City, FC 10001</p></div></div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 flex items-start gap-4"><div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-xl shrink-0">🕐</div><div><h3 class="font-semibold font-heading">Hours</h3><p class="text-sm text-gray-500">Mon-Fri: 8AM-8PM • Sat-Sun: 9AM-6PM</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SIGN IN PAGE ==================== -->
+<div id="page-signin" class="page">
+  <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <span class="absolute text-5xl top-20 left-[10%] animate-float opacity-30">🍿</span>
+      <span class="absolute text-4xl bottom-20 right-[15%] animate-float-d opacity-20">🍪</span>
+    </div>
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 shadow-xl relative z-10 animate-fadeInUp">
+      <div class="text-center mb-8">
+        <img src="Logo.png" alt="Zoza Gateway Snacks" class="h-36 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold font-heading mb-1">Welcome Back</h1>
+        <p class="text-sm text-gray-500">Sign in to your Zoza Gateway Snacks account</p>
+      </div>
+      <div class="space-y-4">
+        <div><label class="block text-sm font-medium mb-1.5">Email</label><input type="email" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="you@example.com" /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Password</label><input type="password" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="••••••••" /></div>
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500" /> Remember me</label>
+          <a href="#" class="text-sm text-brand-500 hover:text-brand-600">Forgot password?</a>
+        </div>
+        <button onclick="showToast('Signed in successfully! Welcome back 🎉');navigate('home')" class="btn-press w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">Sign In</button>
+        <div class="relative my-4"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200 dark:border-slate-700"></div></div><div class="relative flex justify-center"><span class="bg-white dark:bg-slate-900 px-3 text-xs text-gray-500">Or continue with</span></div></div>
+        <button class="w-full py-3 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+      </div>
+      <p class="text-center text-sm text-gray-500 mt-6">Don't have an account? <a href="#" onclick="navigate('signup')" class="text-brand-500 font-medium hover:text-brand-600">Sign Up</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SIGN UP PAGE ==================== -->
+<div id="page-signup" class="page">
+  <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 shadow-xl animate-fadeInUp">
+      <div class="text-center mb-8">
+        <img src="Logo.png" alt="Zoza Gateway Snacks" class="h-36 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold font-heading mb-1">Create Account</h1>
+        <p class="text-sm text-gray-500">Join Zoza Gateway Snacks and start snacking</p>
+      </div>
+      <div class="space-y-4">
+        <div><label class="block text-sm font-medium mb-1.5">Full Name</label><input type="text" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="John Doe" /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Email</label><input type="email" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="you@example.com" /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Phone (optional)</label><input type="tel" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="+1 234 567 890" /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Password</label><input type="password" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="••••••••" /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Confirm Password</label><input type="password" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="••••••••" /></div>
+        <label class="flex items-start gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500 mt-0.5" /> <span class="text-gray-500">I agree to the <a href="#" class="text-brand-500">Terms of Service</a> and <a href="#" class="text-brand-500">Privacy Policy</a></span></label>
+        <button onclick="showToast('Account created! Welcome to ZozaGateway 🎉');navigate('home')" class="btn-press w-full py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">Create Account</button>
+      </div>
+      <p class="text-center text-sm text-gray-500 mt-6">Already have an account? <a href="#" onclick="navigate('signin')" class="text-brand-500 font-medium hover:text-brand-600">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN LOGIN PAGE ==================== -->
+<div id="page-admin-login" class="page">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float-d"></div>
+    </div>
+    
+    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 p-8 shadow-2xl relative z-10 animate-fadeInUp">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 bg-gradient-to-r from-brand-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-brand-500/30">
+          <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <h1 class="text-3xl font-bold font-heading mb-2">Admin Login</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Enter your credentials to access the dashboard</p>
+      </div>
+      
+      <!-- Login Form -->
+      <form id="admin-login-form" class="space-y-5" onsubmit="handleAdminLogin(event)">
+        <!-- Username -->
+        <div>
+          <label class="block text-sm font-semibold mb-2">Username</label>
+          <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <input type="text" id="admin-username" required class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm bg-transparent focus:border-brand-500 dark:focus:border-brand-500 transition-colors" placeholder="Enter username" />
+          </div>
+        </div>
+        
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-semibold mb-2">Password</label>
+          <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+            <input type="password" id="admin-password" required class="w-full pl-10 pr-12 py-3 border-2 border-gray-200 dark:border-slate-600 rounded-xl text-sm bg-transparent focus:border-brand-500 dark:focus:border-brand-500 transition-colors" placeholder="Enter password" />
+            <button type="button" onclick="toggleAdminPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <svg id="admin-eye-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg id="admin-eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Remember Me -->
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="checkbox" id="admin-remember" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" />
+            <span>Remember me</span>
+          </label>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="admin-login-error" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span id="admin-login-error-text">Invalid username or password</span>
+        </div>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="btn-press w-full py-3.5 bg-gradient-to-r from-brand-500 to-orange-600 hover:from-brand-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-500/40 text-sm">
+          Sign In to Dashboard
+        </button>
+      </form>
+      
+      <!-- Back to Store -->
+      <div class="mt-6 text-center">
+        <a href="#" onclick="navigate('home')" class="text-sm text-gray-500 hover:text-brand-500 transition-colors flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back to Store
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN DASHBOARD ==================== -->
+<div id="page-admin" class="page">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex flex-col w-64 bg-slate-900 text-white shrink-0">
+      <div class="p-6 border-b border-slate-700">
+        <a href="#" onclick="navigate('home')" class="flex items-center gap-2">
+          <img src="Logo1.png" alt="Zoza Gateway Snacks" class="h-24 w-auto" />
+        </a>
+      </div>
+      <nav class="flex-1 p-4 space-y-1">
+        <a href="#" onclick="switchAdminTab('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium" data-tab="dashboard">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="#" onclick="switchAdminTab('orders')" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400" data-tab="orders">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          Orders <span class="ml-auto bg-brand-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">12</span>
+        </a>
+        <a href="#" onclick="switchAdminTab('products')" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400" data-tab="products">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          Products
+        </a>
+        <a href="#" onclick="switchAdminTab('customers')" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400" data-tab="customers">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Customers
+        </a>
+        <a href="#" onclick="switchAdminTab('sales')" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400" data-tab="sales">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Sales
+        </a>
+        <a href="#" onclick="switchAdminTab('settings')" class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400" data-tab="settings">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Settings
+        </a>
+      </nav>
+      <div class="p-4 border-t border-slate-700 space-y-2">
+        <a href="#" onclick="adminLogout()" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-400 hover:text-red-400 hover:bg-red-900/20 rounded-xl transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Logout
+        </a>
+        <a href="#" onclick="navigate('home')" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-400 hover:text-white transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/></svg>
+          Back to Store
+        </a>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <div class="flex-1 bg-gray-50 dark:bg-slate-950">
+      <!-- Top Bar -->
+      <div class="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+        <div>
+          <h1 id="admin-title" class="text-xl font-bold font-heading">Dashboard</h1>
+          <p class="text-sm text-gray-500">Welcome back, Admin</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+          </button>
+          <div class="w-9 h-9 bg-brand-500 rounded-full flex items-center justify-center text-white font-bold text-sm">A</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Tab -->
+      <div id="admin-tab-dashboard" class="admin-tab p-6 space-y-6">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 text-xl">💰</div><span class="text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">+8.2%</span></div>
+            <p class="text-sm text-gray-500 mb-1">Total Revenue</p>
+            <p class="text-2xl font-bold font-heading">₦6,225,000</p>
+          </div>
+          <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 text-xl">📦</div><span class="text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">+12%</span></div>
+            <p class="text-sm text-gray-500 mb-1">Today's Orders</p>
+            <p class="text-2xl font-bold font-heading">47</p>
+          </div>
+          <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-amber-600 text-xl">⏳</div><span class="text-xs font-medium text-red-600 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded-full">-3</span></div>
+            <p class="text-sm text-gray-500 mb-1">Pending Orders</p>
+            <p class="text-2xl font-bold font-heading">12</p>
+          </div>
+          <div class="stat-card bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-4"><div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600 text-xl">🍿</div><span class="text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">+5</span></div>
+            <p class="text-sm text-gray-500 mb-1">Total Products</p>
+            <p class="text-2xl font-bold font-heading">86</p>
+          </div>
+        </div>
+        <!-- Revenue Chart -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-bold font-heading">Revenue Overview</h3>
+            <div class="flex gap-1 bg-gray-100 dark:bg-slate-800 rounded-lg p-1">
+              <button class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-slate-700 rounded-md shadow-sm">7 Days</button>
+              <button class="px-3 py-1.5 text-xs font-medium text-gray-500">30 Days</button>
+              <button class="px-3 py-1.5 text-xs font-medium text-gray-500">12 Months</button>
+            </div>
+          </div>
+          <div class="flex items-end gap-3 h-48" id="revenue-chart"></div>
+        </div>
+        <!-- Recent Orders + Top Products -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-4"><h3 class="font-bold font-heading">Recent Orders</h3><a href="#" onclick="switchAdminTab('orders')" class="text-sm text-brand-500 hover:text-brand-600">View All</a></div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead><tr class="text-left text-gray-500 border-b border-gray-100 dark:border-slate-800"><th class="pb-3 font-medium">Order</th><th class="pb-3 font-medium">Customer</th><th class="pb-3 font-medium">Total</th><th class="pb-3 font-medium">Status</th></tr></thead>
+                <tbody id="recent-orders-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+            <h3 class="font-bold font-heading mb-4">Top Selling Products</h3>
+            <div class="space-y-4" id="top-products-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Orders Tab -->
+      <div id="admin-tab-orders" class="admin-tab hidden p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div><h2 class="text-xl font-bold font-heading">Order Management</h2><p class="text-sm text-gray-500">Manage and track all orders</p></div>
+          <div class="flex gap-2">
+            <input type="text" placeholder="Search orders..." class="px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent w-48" />
+            <select class="px-3 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent">
+              <option>All Status</option><option>Pending</option><option>Confirmed</option><option>Preparing</option><option>Ready</option><option>Delivered</option><option>Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left text-gray-500 bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700"><th class="px-6 py-3 font-medium">Order #</th><th class="px-6 py-3 font-medium">Customer</th><th class="px-6 py-3 font-medium">Items</th><th class="px-6 py-3 font-medium">Total</th><th class="px-6 py-3 font-medium">Status</th><th class="px-6 py-3 font-medium">Payment</th><th class="px-6 py-3 font-medium">Date</th></tr></thead>
+              <tbody id="all-orders-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Tab -->
+      <div id="admin-tab-products" class="admin-tab hidden p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div><h2 class="text-xl font-bold font-heading">Products</h2><p class="text-sm text-gray-500">Manage your snack catalog</p></div>
+          <button onclick="showAddProductForm()" class="btn-press px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl text-sm transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Product
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="admin-products-grid"></div>
+      </div>
+
+      <!-- Customers Tab -->
+      <div id="admin-tab-customers" class="admin-tab hidden p-6">
+        <div class="mb-6"><h2 class="text-xl font-bold font-heading">Customers</h2><p class="text-sm text-gray-500">View and manage your customer base</p></div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left text-gray-500 bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700"><th class="px-6 py-3 font-medium">Customer</th><th class="px-6 py-3 font-medium">Email</th><th class="px-6 py-3 font-medium">Orders</th><th class="px-6 py-3 font-medium">Total Spent</th><th class="px-6 py-3 font-medium">Joined</th></tr></thead>
+              <tbody id="customers-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales Tab -->
+      <div id="admin-tab-sales" class="admin-tab hidden p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div><h2 class="text-xl font-bold font-heading">Sales Analytics</h2><p class="text-sm text-gray-500">Track your business performance</p></div>
+          <div class="flex gap-2">
+            <button class="px-3 py-1.5 bg-brand-500 text-white text-xs font-medium rounded-lg">30 Days</button>
+            <button class="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 text-xs font-medium rounded-lg">90 Days</button>
+            <button class="px-3 py-1.5 bg-gray-100 dark:bg-slate-800 text-xs font-medium rounded-lg">12 Months</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 text-center"><p class="text-xs text-gray-500 mb-1">Gross Revenue</p><p class="text-xl font-bold">₦6,225,000</p></div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 text-center"><p class="text-xs text-gray-500 mb-1">Net Revenue</p><p class="text-xl font-bold">₦5,445,000</p></div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 text-center"><p class="text-xs text-gray-500 mb-1">Avg Order</p><p class="text-xl font-bold">₦13,245</p></div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 text-center"><p class="text-xs text-gray-500 mb-1">Total Orders</p><p class="text-xl font-bold">470</p></div>
+          <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 text-center"><p class="text-xs text-gray-500 mb-1">Conversion</p><p class="text-xl font-bold">3.2%</p></div>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+          <h3 class="font-bold font-heading mb-4">Revenue Trend (30 Days)</h3>
+          <div class="flex items-end gap-1 h-48" id="sales-chart"></div>
+        </div>
+      </div>
+      
+      <!-- Settings Tab -->
+      <div id="admin-tab-settings" class="admin-tab hidden p-6">
+        <div class="max-w-4xl">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold font-heading">Settings</h2>
+            <p class="text-sm text-gray-500">Manage your admin account and system settings</p>
+          </div>
+          
+          <!-- Tabs -->
+          <div class="flex gap-4 border-b border-gray-200 dark:border-slate-800 mb-6">
+            <button onclick="switchSettingsTab('profile')" class="settings-tab active pb-3 px-1 text-sm font-medium border-b-2 border-brand-500" data-settings-tab="profile">My Profile</button>
+            <button onclick="switchSettingsTab('admins')" class="settings-tab pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" data-settings-tab="admins">Admin Users</button>
+          </div>
+          
+          <!-- My Profile Tab -->
+          <div id="settings-tab-profile" class="settings-content">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6">
+              <h3 class="text-lg font-bold font-heading mb-6">Change Your Credentials</h3>
+              <form id="change-credentials-form" onsubmit="handleChangeCredentials(event)" class="space-y-5">
+                <div>
+                  <label class="block text-sm font-semibold mb-2">Current Password *</label>
+                  <input type="password" id="current-password" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Enter current password" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-2">New Username *</label>
+                  <input type="text" id="new-username" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Enter new username" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-2">New Password *</label>
+                  <input type="password" id="new-password" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Enter new password" />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-2">Confirm New Password *</label>
+                  <input type="password" id="confirm-password" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Confirm new password" />
+                </div>
+                <div id="credentials-error" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm"></div>
+                <div id="credentials-success" class="hidden bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 px-4 py-3 rounded-xl text-sm"></div>
+                <button type="submit" class="btn-press px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl transition-colors text-sm">
+                  Update Credentials
+                </button>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Admin Users Tab -->
+          <div id="settings-tab-admins" class="settings-content hidden">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="text-lg font-bold font-heading">Admin Users</h3>
+                <p class="text-sm text-gray-500">Manage administrator accounts</p>
+              </div>
+              <button onclick="showAddAdminModal()" class="btn-press px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-xl text-sm transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Add Admin
+              </button>
+            </div>
+            
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="text-left text-gray-500 bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                      <th class="px-6 py-3 font-medium">Username</th>
+                      <th class="px-6 py-3 font-medium">Role</th>
+                      <th class="px-6 py-3 font-medium">Created</th>
+                      <th class="px-6 py-3 font-medium">Status</th>
+                      <th class="px-6 py-3 font-medium">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admins-list"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer id="main-footer" class="bg-slate-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <div class="mb-4">
+          <img src="Logo1.png" alt="Zoza Gateway Snacks" class="h-28 w-auto" />
+        </div>
+        <p class="text-slate-400 text-sm mb-4">Freshly made snacks delivered to your doorstep. Quality you can taste in every bite.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-brand-500 transition-colors text-sm">𝕏</a>
+          <a href="#" class="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-brand-500 transition-colors text-sm">📘</a>
+          <a href="#" class="w-9 h-9 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-brand-500 transition-colors text-sm">📸</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-semibold font-heading mb-4">Quick Links</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li><a href="#" onclick="navigate('home')" class="hover:text-white transition-colors">Home</a></li>
+          <li><a href="#" onclick="navigate('menu')" class="hover:text-white transition-colors">Menu</a></li>
+          <li><a href="#" onclick="navigate('about')" class="hover:text-white transition-colors">About Us</a></li>
+          <li><a href="#" onclick="navigate('contact')" class="hover:text-white transition-colors">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold font-heading mb-4">Categories</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li><a href="#" class="hover:text-white transition-colors">Chips & Crisps</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Cookies & Biscuits</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Nuts & Trail Mix</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Healthy Snacks</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold font-heading mb-4">Contact</h4>
+        <ul class="space-y-2 text-sm text-slate-400">
+          <li>📞 +234 (XXX) XXX-XXXX</li>
+          <li>📧 hello@zozagatewaysnacks.com</li>
+          <li>📍 123 Snack St, Flavor City</li>
+          <li>🕐 Mon-Fri: 8AM-8PM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-slate-800 mt-12 pt-8 text-center text-sm text-slate-500">
+      <p>&copy; 2026 Zoza Gateway Snacks. All rights reserved. Made with ❤️ for snack lovers.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== TOAST ==================== -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
+
+<!-- ==================== ADD ADMIN MODAL ==================== -->
+<div id="add-admin-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeAddAdminModal()">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 max-w-md w-full animate-fadeInUp">
+    <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+      <h3 class="text-xl font-bold font-heading">Add New Admin</h3>
+      <button onclick="closeAddAdminModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="add-admin-form" onsubmit="handleAddAdmin(event)" class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Username *</label>
+        <input type="text" id="new-admin-username" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Enter username" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Password *</label>
+        <input type="password" id="new-admin-password" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Enter password" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Confirm Password *</label>
+        <input type="password" id="new-admin-confirm-password" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Confirm password" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Role</label>
+        <select id="new-admin-role" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent">
+          <option value="Admin">Admin</option>
+          <option value="Super Admin">Super Admin</option>
+        </select>
+      </div>
+      <div id="add-admin-error" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm"></div>
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick="closeAddAdminModal()" class="flex-1 px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+        <button type="submit" class="flex-1 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm transition-colors">Add Admin</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== ADD PRODUCT MODAL ==================== -->
+<div id="add-product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeAddProductForm()">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInUp">
+    <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+      <h3 class="text-xl font-bold font-heading">Add New Product</h3>
+      <button onclick="closeAddProductForm()" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="add-product-form" class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Product Name *</label>
+        <input type="text" id="prod-name" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="e.g., Chocolate Cookies" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Description *</label>
+        <textarea id="prod-desc" required rows="3" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="Describe the product..."></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Price (₦) *</label>
+          <input type="number" id="prod-price" required min="0" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="2999" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Compare Price (₦)</label>
+          <input type="number" id="prod-compare" min="0" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="3999" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Category *</label>
+          <select id="prod-category" required class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent">
+            <option value="">Select category</option>
+            <option value="Chips & Crisps">Chips & Crisps</option>
+            <option value="Cookies & Biscuits">Cookies & Biscuits</option>
+            <option value="Pastries & Pies">Pastries & Pies</option>
+            <option value="Nuts & Trail Mix">Nuts & Trail Mix</option>
+            <option value="Candy & Sweets">Candy & Sweets</option>
+            <option value="Popcorn">Popcorn</option>
+            <option value="Healthy Snacks">Healthy Snacks</option>
+            <option value="Beverages">Beverages</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Stock Quantity *</label>
+          <input type="number" id="prod-stock" required min="0" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="100" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Product Image *</label>
+        <div class="border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-xl p-6 text-center hover:border-brand-500 transition-colors">
+          <input type="file" id="prod-image" accept="image/*" required class="hidden" onchange="previewProductImage(event)" />
+          <div id="image-preview-area">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Click to upload product image</p>
+            <p class="text-xs text-gray-500">PNG, JPG, WEBP up to 5MB</p>
+          </div>
+          <div id="image-preview" class="hidden">
+            <img id="preview-img" class="w-full h-48 object-cover rounded-lg mb-3" />
+            <button type="button" onclick="clearProductImage()" class="text-sm text-red-500 hover:text-red-600">Remove Image</button>
+          </div>
+          <button type="button" onclick="document.getElementById('prod-image').click()" class="mt-3 px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-lg text-sm font-medium transition-colors">
+            Choose File
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1.5">Tags (comma-separated)</label>
+        <input type="text" id="prod-tags" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl text-sm bg-transparent" placeholder="popular, bestseller" />
+      </div>
+      <div>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="prod-featured" class="rounded border-gray-300 text-brand-500" />
+          <span class="text-sm font-medium">Featured Product</span>
+        </label>
+      </div>
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick="closeAddProductForm()" class="flex-1 px-4 py-2.5 border border-gray-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+        <button type="submit" class="flex-1 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-semibold text-sm transition-colors">Add Product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// ===== DATA =====
+const products = [
+  { id:1, name:"Classic Salted Chips", price:1999, comparePrice:2999, category:"Chips & Crisps", catSlug:"chips-crisps", rating:4.5, reviews:128, emoji:"🍟", tags:["popular"], dietary:[], featured:true, stock:150 },
+  { id:2, name:"BBQ Kettle Chips", price:2249, comparePrice:null, category:"Chips & Crisps", catSlug:"chips-crisps", rating:4.3, reviews:89, emoji:"🔥", tags:["spicy"], dietary:["Vegan"], featured:false, stock:120 },
+  { id:3, name:"Double Chocolate Cookies", price:3499, comparePrice:null, category:"Cookies & Biscuits", catSlug:"cookies-biscuits", rating:4.8, reviews:256, emoji:"🍪", tags:["bestseller"], dietary:[], featured:true, stock:80 },
+  { id:4, name:"Oatmeal Raisin Cookies", price:2749, comparePrice:null, category:"Cookies & Biscuits", catSlug:"cookies-biscuits", rating:4.2, reviews:64, emoji:"🍪", tags:["healthy"], dietary:["Nut-Free"], featured:false, stock:60 },
+  { id:5, name:"Butter Croissants (4-pack)", price:4499, comparePrice:5499, category:"Pastries & Pies", catSlug:"pastries-pies", rating:4.7, reviews:192, emoji:"🥐", tags:["premium"], dietary:[], featured:true, stock:40 },
+  { id:6, name:"Mixed Nut Medley", price:4999, comparePrice:null, category:"Nuts & Trail Mix", catSlug:"nuts-trail-mix", rating:4.6, reviews:145, emoji:"🥜", tags:["protein"], dietary:["Vegan","Gluten-Free"], featured:true, stock:90 },
+  { id:7, name:"Trail Mix Adventure", price:3749, comparePrice:null, category:"Nuts & Trail Mix", catSlug:"nuts-trail-mix", rating:4.4, reviews:78, emoji:"🏔️", tags:["energy"], dietary:["Gluten-Free"], featured:false, stock:70 },
+  { id:8, name:"Gummy Bear Party Pack", price:2499, comparePrice:null, category:"Candy & Sweets", catSlug:"candy-sweets", rating:4.1, reviews:203, emoji:"🍬", tags:["kids"], dietary:["Gluten-Free","Nut-Free"], featured:false, stock:200 },
+  { id:9, name:"Caramel Popcorn Crunch", price:2999, comparePrice:null, category:"Popcorn", catSlug:"popcorn", rating:4.5, reviews:167, emoji:"🍿", tags:["sweet"], dietary:["Gluten-Free"], featured:true, stock:110 },
+  { id:10, name:"Organic Veggie Sticks", price:3249, comparePrice:null, category:"Healthy Snacks", catSlug:"healthy-snacks", rating:4.0, reviews:52, emoji:"🥕", tags:["organic"], dietary:["Vegan","Gluten-Free"], featured:false, stock:65 },
+  { id:11, name:"Sparkling Lemonade (6-pack)", price:3999, comparePrice:null, category:"Beverages", catSlug:"beverages", rating:4.3, reviews:94, emoji:"🥤", tags:["refreshing"], dietary:["Vegan","Gluten-Free"], featured:false, stock:50 },
+  { id:12, name:"Spicy Jalapeño Chips", price:2249, comparePrice:null, category:"Chips & Crisps", catSlug:"chips-crisps", rating:4.4, reviews:112, emoji:"🌶️", tags:["spicy"], dietary:["Vegan"], featured:false, stock:95 },
+];
+
+const categories = [
+  { name:"Chips & Crisps", slug:"chips-crisps", emoji:"🍟", count:3 },
+  { name:"Cookies & Biscuits", slug:"cookies-biscuits", emoji:"🍪", count:2 },
+  { name:"Pastries & Pies", slug:"pastries-pies", emoji:"🥧", count:1 },
+  { name:"Nuts & Trail Mix", slug:"nuts-trail-mix", emoji:"🥜", count:2 },
+  { name:"Candy & Sweets", slug:"candy-sweets", emoji:"🍬", count:1 },
+  { name:"Popcorn", slug:"popcorn", emoji:"🍿", count:1 },
+  { name:"Healthy Snacks", slug:"healthy-snacks", emoji:"🥗", count:1 },
+  { name:"Beverages", slug:"beverages", emoji:"🥤", count:1 },
+];
+
+const sampleOrders = [
+  { id:"#ZG-1047", customer:"John Doe", email:"john@example.com", items:3, total:12250, status:"Preparing", payment:"Paid", date:"10:32 AM" },
+  { id:"#ZG-1046", customer:"Sarah Miller", email:"sarah@example.com", items:1, total:4499, status:"Delivered", payment:"Paid", date:"10:15 AM" },
+  { id:"#ZG-1045", customer:"Amina Khan", email:"amina@example.com", items:5, total:21475, status:"Pending", payment:"Pending", date:"9:48 AM" },
+  { id:"#ZG-1044", customer:"Mike Chen", email:"mike@example.com", items:2, total:7990, status:"Ready", payment:"Paid", date:"9:20 AM" },
+  { id:"#ZG-1043", customer:"Lisa Wang", email:"lisa@example.com", items:4, total:15980, status:"Confirmed", payment:"Paid", date:"8:55 AM" },
+  { id:"#ZG-1042", customer:"Tom Brown", email:"tom@example.com", items:1, total:3499, status:"Delivered", payment:"Paid", date:"Yesterday" },
+  { id:"#ZG-1041", customer:"Emma Davis", email:"emma@example.com", items:3, total:9735, status:"Cancelled", payment:"Refunded", date:"Yesterday" },
+  { id:"#ZG-1040", customer:"David Wilson", email:"david@example.com", items:2, total:7490, status:"Delivered", payment:"Paid", date:"Yesterday" },
+];
+
+const sampleCustomers = [
+  { name:"John Doe", email:"john@example.com", orders:12, spent:143700, joined:"Jan 15, 2026", initials:"JD", color:"bg-blue-100 text-blue-600" },
+  { name:"Sarah Miller", email:"sarah@example.com", orders:8, spent:78460, joined:"Jan 22, 2026", initials:"SM", color:"bg-pink-100 text-pink-600" },
+  { name:"Amina Khan", email:"amina@example.com", orders:15, spent:206250, joined:"Dec 10, 2025", initials:"AK", color:"bg-purple-100 text-purple-600" },
+  { name:"Mike Chen", email:"mike@example.com", orders:5, spent:44975, joined:"Feb 1, 2026", initials:"MC", color:"bg-green-100 text-green-600" },
+  { name:"Lisa Wang", email:"lisa@example.com", orders:20, spent:267400, joined:"Nov 5, 2025", initials:"LW", color:"bg-amber-100 text-amber-600" },
+  { name:"Tom Brown", email:"tom@example.com", orders:3, spent:22985, joined:"Feb 3, 2026", initials:"TB", color:"bg-red-100 text-red-600" },
+];
+
+// ===== CART STATE =====
+let cart = JSON.parse(localStorage.getItem('zg-cart') || '[]');
+
+function saveCart() {
+  localStorage.setItem('zg-cart', JSON.stringify(cart));
+  updateCartBadge();
+}
+
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  const existing = cart.find(item => item.id === productId);
+  if (existing) { existing.qty++; }
+  else { cart.push({ id: product.id, name: product.name, price: product.price, emoji: product.emoji, qty: 1 }); }
+  saveCart();
+  showToast(`${product.name} added to cart! 🛒`);
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  saveCart();
+  renderCart();
+}
+
+function updateQty(productId, delta) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) { removeFromCart(productId); return; }
+  saveCart();
+  renderCart();
+}
+
+function updateCartBadge() {
+  const count = cart.reduce((sum, item) => sum + item.qty, 0);
+  const badge = document.getElementById('cart-count');
+  if (count > 0) { badge.style.display = 'flex'; badge.textContent = count; }
+  else { badge.style.display = 'none'; }
+}
+
+function getSubtotal() { return cart.reduce((sum, item) => sum + item.price * item.qty, 0); }
+function getDeliveryFee() { return getSubtotal() >= 12500 ? 0 : 1995; }
+function getTotal() { return getSubtotal() + getDeliveryFee(); }
+
+// ===== NAVIGATION =====
+let currentPage = 'home';
+let isAdminAuthenticated = false;
+let currentAdmin = null;
+
+// Admin credentials storage (in production, this should be server-side with encryption)
+function getAdminUsers() {
+  const stored = localStorage.getItem('zg-admin-users');
+  if (!stored) {
+    // Initialize with default admin
+    const defaultAdmins = [{
+      id: 1,
+      username: 'admin',
+      password: 'admin22',
+      role: 'Super Admin',
+      created: new Date().toISOString(),
+      status: 'Active'
+    }];
+    localStorage.setItem('zg-admin-users', JSON.stringify(defaultAdmins));
+    return defaultAdmins;
+  }
+  return JSON.parse(stored);
+}
+
+function saveAdminUsers(admins) {
+  localStorage.setItem('zg-admin-users', JSON.stringify(admins));
+}
+
+function navigate(page) {
+  // Check if trying to access admin page
+  if (page === 'admin') {
+    if (!isAdminAuthenticated) {
+      navigate('admin-login');
+      return false;
+    }
+  }
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) { target.classList.add('active'); currentPage = page; }
+  // Header/footer visibility
+  const header = document.getElementById('main-header');
+  const footer = document.getElementById('main-footer');
+  if (page === 'admin' || page === 'admin-login') { 
+    header.style.display = 'none'; 
+    footer.style.display = 'none'; 
+  }
+  else { 
+    header.style.display = 'block'; 
+    footer.style.display = 'block'; 
+  }
+  // Update nav active
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('text-brand-500', l.dataset.page === page);
+    l.classList.toggle('font-semibold', l.dataset.page === page);
+  });
+  // Render page content
+  if (page === 'cart') renderCart();
+  if (page === 'checkout') renderCheckout();
+  if (page === 'admin') renderAdminUsers();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  return false;
+}
+
+// ===== ADMIN AUTHENTICATION =====
+function handleAdminLogin(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('admin-username').value;
+  const password = document.getElementById('admin-password').value;
+  const remember = document.getElementById('admin-remember').checked;
+  const errorDiv = document.getElementById('admin-login-error');
+  
+  // Get all admin users
+  const adminUsers = getAdminUsers();
+  
+  // Find matching admin
+  const admin = adminUsers.find(a => a.username === username && a.password === password && a.status === 'Active');
+  
+  if (admin) {
+    // Successful login
+    isAdminAuthenticated = true;
+    currentAdmin = admin;
+    
+    // Store session if remember me is checked
+    const sessionData = { username: admin.username, id: admin.id };
+    if (remember) {
+      localStorage.setItem('zg-admin-auth', JSON.stringify(sessionData));
+    } else {
+      sessionStorage.setItem('zg-admin-auth', JSON.stringify(sessionData));
+    }
+    
+    // Hide error if visible
+    errorDiv.classList.add('hidden');
+    
+    // Show success toast
+    showToast('Login successful! Welcome ' + admin.username + ' 👋');
+    
+    // Navigate to admin dashboard
+    setTimeout(() => {
+      navigate('admin');
+    }, 500);
+  } else {
+    // Failed login
+    errorDiv.classList.remove('hidden');
+    document.getElementById('admin-login-error-text').textContent = 'Invalid username or password';
+    
+    // Shake animation
+    const form = document.getElementById('admin-login-form');
+    form.style.animation = 'none';
+    setTimeout(() => {
+      form.style.animation = 'shake 0.5s';
+    }, 10);
+  }
+  
+  return false;
+}
+
+function toggleAdminPassword() {
+  const passwordInput = document.getElementById('admin-password');
+  const eyeOpen = document.getElementById('admin-eye-open');
+  const eyeClosed = document.getElementById('admin-eye-closed');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeOpen.classList.add('hidden');
+    eyeClosed.classList.remove('hidden');
+  } else {
+    passwordInput.type = 'password';
+    eyeOpen.classList.remove('hidden');
+    eyeClosed.classList.add('hidden');
+  }
+}
+
+function adminLogout() {
+  isAdminAuthenticated = false;
+  currentAdmin = null;
+  localStorage.removeItem('zg-admin-auth');
+  sessionStorage.removeItem('zg-admin-auth');
+  showToast('Logged out successfully 👋');
+  navigate('home');
+}
+
+// Check if admin is already authenticated (on page load)
+function checkAdminAuth() {
+  const localSession = localStorage.getItem('zg-admin-auth');
+  const sessionSession = sessionStorage.getItem('zg-admin-auth');
+  
+  if (localSession || sessionSession) {
+    try {
+      const sessionData = JSON.parse(localSession || sessionSession);
+      const adminUsers = getAdminUsers();
+      const admin = adminUsers.find(a => a.id === sessionData.id && a.username === sessionData.username);
+      
+      if (admin && admin.status === 'Active') {
+        isAdminAuthenticated = true;
+        currentAdmin = admin;
+      }
+    } catch (e) {
+      console.error('Session parse error:', e);
+    }
+  }
+}
+
+// ===== CHANGE CREDENTIALS =====
+function handleChangeCredentials(event) {
+  event.preventDefault();
+  
+  const currentPassword = document.getElementById('current-password').value;
+  const newUsername = document.getElementById('new-username').value;
+  const newPassword = document.getElementById('new-password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+  
+  const errorDiv = document.getElementById('credentials-error');
+  const successDiv = document.getElementById('credentials-success');
+  
+  errorDiv.classList.add('hidden');
+  successDiv.classList.add('hidden');
+  
+  // Validate current password
+  if (currentAdmin.password !== currentPassword) {
+    errorDiv.textContent = 'Current password is incorrect';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Validate new password match
+  if (newPassword !== confirmPassword) {
+    errorDiv.textContent = 'New passwords do not match';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Validate password length
+  if (newPassword.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Check if username already exists (for other users)
+  const adminUsers = getAdminUsers();
+  const usernameExists = adminUsers.some(a => a.username === newUsername && a.id !== currentAdmin.id);
+  if (usernameExists) {
+    errorDiv.textContent = 'Username already exists';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Update credentials
+  const updatedAdmins = adminUsers.map(a => {
+    if (a.id === currentAdmin.id) {
+      return { ...a, username: newUsername, password: newPassword };
+    }
+    return a;
+  });
+  
+  saveAdminUsers(updatedAdmins);
+  currentAdmin.username = newUsername;
+  currentAdmin.password = newPassword;
+  
+  // Update session
+  const sessionData = { username: newUsername, id: currentAdmin.id };
+  if (localStorage.getItem('zg-admin-auth')) {
+    localStorage.setItem('zg-admin-auth', JSON.stringify(sessionData));
+  } else {
+    sessionStorage.setItem('zg-admin-auth', JSON.stringify(sessionData));
+  }
+  
+  successDiv.textContent = 'Credentials updated successfully!';
+  successDiv.classList.remove('hidden');
+  
+  // Clear form
+  document.getElementById('change-credentials-form').reset();
+  
+  showToast('Credentials updated successfully! 🎉');
+  
+  return false;
+}
+
+// ===== ADMIN USERS MANAGEMENT =====
+function renderAdminUsers() {
+  const tbody = document.getElementById('admins-list');
+  if (!tbody) return;
+  
+  const adminUsers = getAdminUsers();
+  
+  tbody.innerHTML = adminUsers.map(admin => `
+    <tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+      <td class="px-6 py-4 font-medium">${admin.username}</td>
+      <td class="px-6 py-4">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${admin.role === 'Super Admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'}">
+          ${admin.role}
+        </span>
+      </td>
+      <td class="px-6 py-4 text-gray-500">${new Date(admin.created).toLocaleDateString()}</td>
+      <td class="px-6 py-4">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${admin.status === 'Active' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}">
+          <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+          ${admin.status}
+        </span>
+      </td>
+      <td class="px-6 py-4">
+        <div class="flex items-center gap-2">
+          ${admin.id !== currentAdmin.id ? `
+            <button onclick="toggleAdminStatus(${admin.id})" class="text-sm text-gray-600 hover:text-brand-500 dark:text-gray-400 dark:hover:text-brand-400 transition-colors" title="${admin.status === 'Active' ? 'Deactivate' : 'Activate'}">
+              ${admin.status === 'Active' ? 'Deactivate' : 'Activate'}
+            </button>
+            <button onclick="deleteAdmin(${admin.id})" class="text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors" title="Delete">
+              Delete
+            </button>
+          ` : '<span class="text-xs text-gray-400">Current User</span>'}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function showAddAdminModal() {
+  document.getElementById('add-admin-modal').classList.remove('hidden');
+  document.getElementById('add-admin-form').reset();
+  document.getElementById('add-admin-error').classList.add('hidden');
+}
+
+function closeAddAdminModal() {
+  document.getElementById('add-admin-modal').classList.add('hidden');
+}
+
+function handleAddAdmin(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('new-admin-username').value;
+  const password = document.getElementById('new-admin-password').value;
+  const confirmPassword = document.getElementById('new-admin-confirm-password').value;
+  const role = document.getElementById('new-admin-role').value;
+  const errorDiv = document.getElementById('add-admin-error');
+  
+  errorDiv.classList.add('hidden');
+  
+  // Validate password match
+  if (password !== confirmPassword) {
+    errorDiv.textContent = 'Passwords do not match';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Validate password length
+  if (password.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Check if username already exists
+  const adminUsers = getAdminUsers();
+  const usernameExists = adminUsers.some(a => a.username === username);
+  if (usernameExists) {
+    errorDiv.textContent = 'Username already exists';
+    errorDiv.classList.remove('hidden');
+    return false;
+  }
+  
+  // Create new admin
+  const newAdmin = {
+    id: Math.max(...adminUsers.map(a => a.id), 0) + 1,
+    username,
+    password,
+    role,
+    created: new Date().toISOString(),
+    status: 'Active'
+  };
+  
+  adminUsers.push(newAdmin);
+  saveAdminUsers(adminUsers);
+  
+  closeAddAdminModal();
+  renderAdminUsers();
+  showToast('Admin user created successfully! 🎉');
+  
+  return false;
+}
+
+function toggleAdminStatus(adminId) {
+  const adminUsers = getAdminUsers();
+  const updatedAdmins = adminUsers.map(a => {
+    if (a.id === adminId) {
+      return { ...a, status: a.status === 'Active' ? 'Inactive' : 'Active' };
+    }
+    return a;
+  });
+  
+  saveAdminUsers(updatedAdmins);
+  renderAdminUsers();
+  showToast('Admin status updated successfully!');
+}
+
+function deleteAdmin(adminId) {
+  if (!confirm('Are you sure you want to delete this admin user?')) {
+    return;
+  }
+  
+  const adminUsers = getAdminUsers();
+  const filteredAdmins = adminUsers.filter(a => a.id !== adminId);
+  
+  saveAdminUsers(filteredAdmins);
+  renderAdminUsers();
+  showToast('Admin user deleted successfully!');
+}
+
+// ===== SETTINGS TAB SWITCHING =====
+function switchSettingsTab(tab) {
+  document.querySelectorAll('.settings-content').forEach(t => t.classList.add('hidden'));
+  document.getElementById('settings-tab-' + tab).classList.remove('hidden');
+  
+  document.querySelectorAll('.settings-tab').forEach(t => {
+    const isActive = t.dataset.settingsTab === tab;
+    t.classList.toggle('border-brand-500', isActive);
+    t.classList.toggle('border-transparent', !isActive);
+    t.classList.toggle('text-brand-500', isActive);
+    t.classList.toggle('text-gray-500', !isActive);
+  });
+  
+  if (tab === 'admins') {
+    renderAdminUsers();
+  }
+}
+
+function toggleSearch() { document.getElementById('search-bar').classList.toggle('hidden'); }
+function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+function toggleDarkMode() { 
+  document.documentElement.classList.toggle('dark'); 
+  updateHeaderLogo();
+}
+
+function updateHeaderLogo() {
+  const mainLogo = document.getElementById('main-logo');
+  if (mainLogo) {
+    if (document.documentElement.classList.contains('dark')) {
+      mainLogo.src = 'Logo1.png';
+    } else {
+      mainLogo.src = 'Logo.png';
+    }
+  }
+}
+
+// ===== RENDER FUNCTIONS =====
+function renderStars(rating) {
+  let s = '';
+  for (let i = 1; i <= 5; i++) {
+    s += i <= Math.floor(rating) ? '<span class="text-amber-400">★</span>' : (i - 0.5 <= rating ? '<span class="text-amber-400">★</span>' : '<span class="text-gray-300 dark:text-slate-600">★</span>');
+  }
+  return s;
+}
+
+function statusBadge(status) {
+  const colors = { Pending:'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', Confirmed:'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', Preparing:'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', Ready:'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', Delivered:'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', Cancelled:'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', Paid:'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', Refunded:'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400' };
+  return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${colors[status] || 'bg-gray-100 text-gray-800'}"><span class="w-1.5 h-1.5 rounded-full bg-current"></span>${status}</span>`;
+}
+
+function productCard(p) {
+  const imageContent = p.image 
+    ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover product-img group-hover:scale-110 transition-transform duration-500" />`
+    : `<span class="text-7xl product-img group-hover:scale-110 transition-transform duration-500">${p.emoji}</span>`;
+    
+  return `<div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 overflow-hidden card-hover group">
+    <div class="relative h-48 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center overflow-hidden">
+      ${imageContent}
+      ${p.comparePrice ? '<span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-lg">SALE</span>' : ''}
+      ${p.featured ? '<span class="absolute top-3 right-3 bg-brand-500 text-white text-xs font-bold px-2 py-1 rounded-lg">⭐ Featured</span>' : ''}
+    </div>
+    <div class="p-4">
+      <span class="text-xs text-brand-500 font-medium">${p.category}</span>
+      <h3 class="font-semibold font-heading mt-1 mb-1 text-sm">${p.name}</h3>
+      <div class="flex items-center gap-1 mb-2">${renderStars(p.rating)} <span class="text-xs text-gray-400 ml-1">(${p.reviews})</span></div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-lg font-bold text-brand-500">₦${p.price.toLocaleString()}</span>
+          ${p.comparePrice ? `<span class="text-sm text-gray-400 line-through">₦${p.comparePrice.toLocaleString()}</span>` : ''}
+        </div>
+        <button onclick="addToCart(${p.id})" class="btn-press w-9 h-9 bg-brand-500 hover:bg-brand-600 text-white rounded-xl flex items-center justify-center transition-colors text-lg" title="Add to Cart">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderFeatured() {
+  const grid = document.getElementById('featured-grid');
+  grid.innerHTML = products.filter(p => p.featured).map(productCard).join('');
+}
+
+function renderCategories() {
+  const grid = document.getElementById('categories-grid');
+  grid.innerHTML = categories.map(c =>
+    `<a href="#" onclick="navigate('menu')" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-6 text-center card-hover group cursor-pointer">
+      <div class="text-4xl mb-3 group-hover:scale-110 transition-transform">${c.emoji}</div>
+      <h3 class="font-semibold font-heading text-sm mb-1">${c.name}</h3>
+      <p class="text-xs text-gray-500">${c.count} products</p>
+    </a>`
+  ).join('');
+  // Filter checkboxes
+  const fc = document.getElementById('filter-categories');
+  if (fc) fc.innerHTML = categories.map(c => `<label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" /> ${c.name}</label>`).join('');
+}
+
+function renderMenu() {
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = products.map(productCard).join('');
+}
+
+function renderCart() {
+  const empty = document.getElementById('cart-empty');
+  const content = document.getElementById('cart-content');
+  if (cart.length === 0) { empty.classList.remove('hidden'); content.classList.add('hidden'); return; }
+  empty.classList.add('hidden'); content.classList.remove('hidden');
+  const items = document.getElementById('cart-items');
+  items.innerHTML = cart.map(item =>
+    `<div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 flex items-center gap-4 animate-fadeInUp">
+      <div class="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-3xl shrink-0">${item.emoji}</div>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-semibold text-sm truncate">${item.name}</h3>
+        <p class="text-brand-500 font-bold">₦${item.price.toLocaleString()}</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="updateQty(${item.id},-1)" class="w-8 h-8 border border-gray-200 dark:border-slate-700 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors font-bold">−</button>
+        <span class="w-8 text-center font-semibold text-sm">${item.qty}</span>
+        <button onclick="updateQty(${item.id},1)" class="w-8 h-8 border border-gray-200 dark:border-slate-700 rounded-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors font-bold">+</button>
+      </div>
+      <div class="text-right w-20">
+        <p class="font-bold text-sm">₦${(item.price * item.qty).toLocaleString()}</p>
+      </div>
+      <button onclick="removeFromCart(${item.id})" class="p-1.5 text-gray-400 hover:text-red-500 transition-colors" title="Remove">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+      </button>
+    </div>`
+  ).join('');
+  document.getElementById('cart-subtotal').textContent = '₦' + getSubtotal().toLocaleString();
+  document.getElementById('cart-delivery').textContent = getDeliveryFee() === 0 ? 'FREE' : '₦' + getDeliveryFee().toLocaleString();
+  document.getElementById('cart-total').textContent = '₦' + getTotal().toLocaleString();
+}
+
+function renderCheckout() {
+  const items = document.getElementById('checkout-items');
+  items.innerHTML = cart.map(item =>
+    `<div class="flex items-center gap-3 text-sm"><span class="text-2xl">${item.emoji}</span><span class="flex-1">${item.name} × ${item.qty}</span><span class="font-semibold">₦${(item.price * item.qty).toLocaleString()}</span></div>`
+  ).join('');
+  document.getElementById('checkout-subtotal').textContent = '₦' + getSubtotal().toLocaleString();
+  document.getElementById('checkout-total').textContent = '₦' + getTotal().toLocaleString();
+}
+
+let checkoutStep = 1;
+function goToCheckoutStep(step) {
+  checkoutStep = step;
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('checkout-step-' + i).classList.toggle('hidden', i !== step);
+  }
+  // Update indicators
+  for (let i = 1; i <= 3; i++) {
+    const ind = document.getElementById('step' + i + '-ind');
+    const circle = ind.querySelector('div');
+    const text = ind.querySelector('span');
+    if (i <= step) { circle.className = 'w-8 h-8 bg-brand-500 text-white rounded-full flex items-center justify-center text-sm font-bold'; if(text) text.className = 'text-sm font-medium hidden sm:inline'; }
+    else { circle.className = 'w-8 h-8 bg-gray-200 dark:bg-slate-700 text-gray-500 rounded-full flex items-center justify-center text-sm font-bold'; if(text) text.className = 'text-sm font-medium text-gray-400 hidden sm:inline'; }
+  }
+  if (step === 2) renderCheckout();
+}
+
+function placeOrder() {
+  document.getElementById('checkout-step-3').classList.add('hidden');
+  document.getElementById('checkout-success').classList.remove('hidden');
+  const orderNum = 'ZG-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+  document.getElementById('order-number').textContent = orderNum;
+  cart = [];
+  saveCart();
+}
+
+// ===== ADMIN =====
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+  document.getElementById('admin-tab-' + tab).classList.remove('hidden');
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.tab === tab);
+    l.classList.toggle('text-slate-400', l.dataset.tab !== tab);
+  });
+  const titles = { 
+    dashboard:'Dashboard', 
+    orders:'Order Management', 
+    products:'Products', 
+    customers:'Customers', 
+    sales:'Sales Analytics',
+    settings:'Settings'
+  };
+  document.getElementById('admin-title').textContent = titles[tab] || 'Dashboard';
+  
+  // Render admin users when switching to settings
+  if (tab === 'settings') {
+    renderAdminUsers();
+  }
+}
+
+function renderAdminDashboard() {
+  // Revenue chart bars
+  const chartEl = document.getElementById('revenue-chart');
+  const revenueData = [1200,1800,1450,2100,1900,2400,2200];
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const maxRev = Math.max(...revenueData);
+  chartEl.innerHTML = revenueData.map((v, i) =>
+    `<div class="flex-1 flex flex-col items-center gap-2">
+      <div class="text-xs font-medium text-gray-500">$${(v/1000).toFixed(1)}k</div>
+      <div class="w-full bg-gradient-to-t from-brand-500 to-brand-400 rounded-t-lg transition-all duration-700" style="height:${(v/maxRev)*100}%"></div>
+      <div class="text-xs text-gray-400">${days[i]}</div>
+    </div>`
+  ).join('');
+
+  // Sales chart
+  const salesEl = document.getElementById('sales-chart');
+  const salesData = Array.from({length:30}, () => Math.floor(Math.random()*600 + 200));
+  const maxSales = Math.max(...salesData);
+  salesEl.innerHTML = salesData.map((v) =>
+    `<div class="flex-1 bg-gradient-to-t from-brand-500 to-brand-400 rounded-t transition-all duration-500 hover:from-brand-600 hover:to-brand-500" style="height:${(v/maxSales)*100}%" title="$${v}"></div>`
+  ).join('');
+
+  // Recent orders
+  const tbody = document.getElementById('recent-orders-body');
+  tbody.innerHTML = sampleOrders.slice(0,5).map(o =>
+    `<tr class="border-b border-gray-50 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50"><td class="py-3 font-medium font-mono text-xs">${o.id}</td><td class="py-3">${o.customer}</td><td class="py-3 font-semibold">₦${o.total.toLocaleString()}</td><td class="py-3">${statusBadge(o.status)}</td></tr>`
+  ).join('');
+
+  // All orders
+  const allBody = document.getElementById('all-orders-body');
+  allBody.innerHTML = sampleOrders.map(o =>
+    `<tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50"><td class="px-6 py-4 font-medium font-mono text-xs">${o.id}</td><td class="px-6 py-4">${o.customer}</td><td class="px-6 py-4">${o.items}</td><td class="px-6 py-4 font-semibold">₦${o.total.toLocaleString()}</td><td class="px-6 py-4">${statusBadge(o.status)}</td><td class="px-6 py-4">${statusBadge(o.payment)}</td><td class="px-6 py-4 text-gray-500">${o.date}</td></tr>`
+  ).join('');
+
+  // Top products
+  const topEl = document.getElementById('top-products-list');
+  const topProducts = products.sort((a,b) => b.reviews - a.reviews).slice(0,5);
+  topEl.innerHTML = topProducts.map((p, i) =>
+    `<div class="flex items-center gap-3">
+      <span class="text-2xl">${p.emoji}</span>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm truncate">${p.name}</p>
+        <p class="text-xs text-gray-500">${p.reviews} sold</p>
+      </div>
+      <div class="w-24 bg-gray-100 dark:bg-slate-800 rounded-full h-2"><div class="bg-brand-500 h-2 rounded-full" style="width:${(p.reviews/topProducts[0].reviews)*100}%"></div></div>
+      <span class="font-semibold text-sm w-20 text-right">₦${(p.price * p.reviews).toLocaleString()}</span>
+    </div>`
+  ).join('');
+
+  // Admin products grid
+  const apGrid = document.getElementById('admin-products-grid');
+  apGrid.innerHTML = products.map(p => {
+    const imageContent = p.image 
+      ? `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover" />`
+      : `<span class="text-5xl">${p.emoji}</span>`;
+    return `<div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 overflow-hidden">
+      <div class="h-32 bg-gray-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">${imageContent}</div>
+      <div class="p-4">
+        <h4 class="font-semibold text-sm mb-1">${p.name}</h4>
+        <div class="flex items-center justify-between text-sm">
+          <span class="font-bold text-brand-500">₦${p.price.toLocaleString()}</span>
+          <span class="text-gray-500">Stock: ${p.stock}</span>
+        </div>
+        <div class="flex gap-2 mt-3">
+          <button class="flex-1 py-1.5 text-xs font-medium border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Edit</button>
+          <button class="py-1.5 px-3 text-xs font-medium text-red-500 border border-red-200 dark:border-red-900 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Customers
+  const custBody = document.getElementById('customers-body');
+  custBody.innerHTML = sampleCustomers.map(c =>
+    `<tr class="border-b border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+      <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 ${c.color} dark:bg-opacity-30 rounded-full flex items-center justify-center text-xs font-bold">${c.initials}</div><span class="font-medium">${c.name}</span></div></td>
+      <td class="px-6 py-4 text-gray-500">${c.email}</td>
+      <td class="px-6 py-4 font-medium">${c.orders}</td>
+      <td class="px-6 py-4 font-semibold">₦${c.spent.toLocaleString()}</td>
+      <td class="px-6 py-4 text-gray-500">${c.joined}</td>
+    </tr>`
+  ).join('');
+}
+
+// ===== TOAST =====
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-lg text-sm font-medium animate-slideInRight max-w-sm';
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+function showSuccess(message) {
+  showToast(message + ' 🎉');
+}
+
+// ===== ADD PRODUCT =====
+let productImageData = null;
+
+function showAddProductForm() {
+  document.getElementById('add-product-modal').classList.remove('hidden');
+  document.getElementById('add-product-form').reset();
+  productImageData = null;
+  document.getElementById('image-preview').classList.add('hidden');
+  document.getElementById('image-preview-area').classList.remove('hidden');
+}
+
+function closeAddProductForm() {
+  document.getElementById('add-product-modal').classList.add('hidden');
+  productImageData = null;
+}
+
+function previewProductImage(event) {
+  const file = event.target.files[0];
+  if (file) {
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image size must be less than 5MB ⚠️');
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      productImageData = e.target.result;
+      document.getElementById('preview-img').src = e.target.result;
+      document.getElementById('image-preview').classList.remove('hidden');
+      document.getElementById('image-preview-area').classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function clearProductImage() {
+  productImageData = null;
+  document.getElementById('prod-image').value = '';
+  document.getElementById('image-preview').classList.add('hidden');
+  document.getElementById('image-preview-area').classList.remove('hidden');
+}
+
+document.getElementById('add-product-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  if (!productImageData) {
+    showToast('Please upload a product image ⚠️');
+    return;
+  }
+  
+  const newProduct = {
+    id: products.length + 1,
+    name: document.getElementById('prod-name').value,
+    price: parseInt(document.getElementById('prod-price').value),
+    comparePrice: document.getElementById('prod-compare').value ? parseInt(document.getElementById('prod-compare').value) : null,
+    category: document.getElementById('prod-category').value,
+    catSlug: document.getElementById('prod-category').value.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-'),
+    rating: 0,
+    reviews: 0,
+    image: productImageData,
+    emoji: null,
+    tags: document.getElementById('prod-tags').value.split(',').map(t => t.trim()).filter(t => t),
+    dietary: [],
+    featured: document.getElementById('prod-featured').checked,
+    stock: parseInt(document.getElementById('prod-stock').value),
+  };
+  
+  products.push(newProduct);
+  renderAdminDashboard();
+  renderFeatured();
+  renderMenu();
+  closeAddProductForm();
+  showToast('Product added successfully! 🎉');
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  checkAdminAuth(); // Check if admin is already logged in
+  updateHeaderLogo(); // Set correct logo for current theme
+  renderFeatured();
+  renderCategories();
+  renderMenu();
+  renderAdminDashboard();
+  updateCartBadge();
+});
+</script>
+</body>
+</html>
