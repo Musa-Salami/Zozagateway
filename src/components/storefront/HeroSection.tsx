@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, ShoppingCart, BookOpen } from "lucide-react";
+import { ArrowRight, ShoppingCart, BookOpen } from "lucide-react";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -58,8 +58,8 @@ export function HeroSection() {
             transition={{ duration: 0.6 }}
           >
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border bg-background/80 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
-              <Sparkles className="h-4 w-4 text-brand-500" />
-              <span>Handcrafted with love</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-brand-500" />
+              <span>Fresh snacks delivered daily</span>
             </div>
           </motion.div>
 
@@ -69,10 +69,12 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Freshly Made Snacks,{" "}
+            Freshly Made{" "}
             <span className="bg-gradient-to-r from-brand-500 to-orange-400 bg-clip-text text-transparent">
-              Delivered to You
+              Snacks, Delivered
             </span>
+            <br />
+            to You
           </motion.h1>
 
           <motion.p
@@ -81,9 +83,9 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-6 text-lg text-muted-foreground md:text-xl max-w-2xl mx-auto"
           >
-            Discover our curated selection of freshly made snacks, baked goods,
-            and treats. Made with premium ingredients and delivered straight to
-            your door.
+            Discover our <span className="font-semibold text-brand-500">handcrafted collection</span> of delicious snacks.
+            From crispy chips to decadent cookies, satisfaction is just
+            a click away.
           </motion.p>
 
           <motion.div
