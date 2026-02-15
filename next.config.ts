@@ -20,6 +20,13 @@ const nextConfig: NextConfig = {
     ],
   },
   trailingSlash: true,
+  // Skip type and lint checks during build — handled by CI separately
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
