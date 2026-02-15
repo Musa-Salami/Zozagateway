@@ -63,9 +63,11 @@ export function Sidebar({ currentPath, isOpen = true, onClose }: SidebarProps) {
             collapsed && "justify-center"
           )}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-500">
-            <span className="text-sm font-bold text-white">Z</span>
-          </div>
+          <img
+            src="/images/logo.png"
+            alt="Zoza Gateway Snacks"
+            className="h-10 w-auto shrink-0 object-contain"
+          />
           {!collapsed && (
             <motion.span
               initial={{ opacity: 0, width: 0 }}
