@@ -69,7 +69,8 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-heading text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Freshly Made{" "}
+            Freshly Made
+            <br />
             <span className="bg-gradient-to-r from-brand-500 to-orange-400 bg-clip-text text-transparent">
               Snacks, Delivered
             </span>

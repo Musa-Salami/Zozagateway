@@ -18,7 +18,12 @@ export function Logo({ size = "md", className }: LogoProps) {
       <img
         src="/images/logo.png"
         alt="Zoza Gateway Snacks"
-        className={cn("object-contain", imageSizeMap[size])}
+        className={cn("object-contain dark:hidden", imageSizeMap[size])}
+      />
+      <img
+        src="/images/logo1.png"
+        alt="Zoza Gateway Snacks"
+        className={cn("object-contain hidden dark:block", imageSizeMap[size])}
       />
     </Link>
   );

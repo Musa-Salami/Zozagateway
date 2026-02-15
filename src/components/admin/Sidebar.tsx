@@ -66,7 +66,12 @@ export function Sidebar({ currentPath, isOpen = true, onClose }: SidebarProps) {
           <img
             src="/images/logo.png"
             alt="Zoza Gateway Snacks"
-            className="h-10 w-auto shrink-0 object-contain"
+            className="h-10 w-auto shrink-0 object-contain dark:hidden"
+          />
+          <img
+            src="/images/logo1.png"
+            alt="Zoza Gateway Snacks"
+            className="h-10 w-auto shrink-0 object-contain hidden dark:block"
           />
           {!collapsed && (
             <motion.span
