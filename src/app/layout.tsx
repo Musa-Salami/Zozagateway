@@ -16,8 +16,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "ZozaGateway - Freshly Made Snacks",
-    template: "%s | ZozaGateway",
+    default: "Zoza Gateway Snacks - Freshly Made Snacks",
+    template: "%s | Zoza Gateway Snacks",
   },
   description:
     "Order freshly made snacks delivered to your doorstep. Browse our catalog of chips, cookies, pastries, and more.",

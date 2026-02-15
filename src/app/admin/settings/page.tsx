@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
   // General Settings
-  const [storeName, setStoreName] = useState("ZozaGateway");
+  const [storeName, setStoreName] = useState("Zoza Gateway Snacks");
   const [storeDescription, setStoreDescription] = useState(
     "Freshly made snacks, delivered to your doorstep"
   );

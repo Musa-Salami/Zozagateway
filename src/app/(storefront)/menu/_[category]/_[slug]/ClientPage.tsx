@@ -128,7 +128,7 @@ const sampleReviews: Review[] = [
   },
   {
     id: "rev-3", userId: "u3", productId: "p1", rating: 5,
-    comment: "Best snack discovery of the year! I ordered these for a party and they were gone in minutes. Everyone kept asking where I got them. ZozaGateway delivers quality!",
+    comment: "Best snack discovery of the year! I ordered these for a party and they were gone in minutes. Everyone kept asking where I got them. Zoza Gateway Snacks delivers quality!",
     user: { id: "u3", email: "amara@example.com", name: "Amara Osei", role: "CUSTOMER", createdAt: "2025-01-01T00:00:00Z" },
     createdAt: "2025-12-01T10:00:00Z",
   },

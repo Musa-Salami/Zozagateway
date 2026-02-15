@@ -175,7 +175,7 @@ export default function SignUpPage() {
                 Create Account
               </h1>
               <p className="text-sm text-muted-foreground">
-                Join ZozaGateway and start ordering your favorite snacks
+                Join Zoza Gateway Snacks and start ordering your favorite snacks
               </p>
             </motion.div>
           </CardHeader>

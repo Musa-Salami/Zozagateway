@@ -1,4 +1,4 @@
-export const SITE_NAME = "ZozaGateway";
+export const SITE_NAME = "Zoza Gateway Snacks";
 export const SITE_DESCRIPTION = "Freshly made snacks, delivered to your doorstep";
 export const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 

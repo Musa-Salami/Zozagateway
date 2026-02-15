@@ -45,7 +45,7 @@ export function TopBar({
   onMenuToggle,
   breadcrumbs = [],
   notificationCount = 0,
-  user = { name: "Admin User", email: "admin@zozagateway.com" },
+  user = { name: "Admin User", email: "admin@zozagatewaysnacks.com" },
 }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
 

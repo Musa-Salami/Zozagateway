@@ -191,7 +191,7 @@ const sampleTestimonials = [
     name: "Sarah Johnson",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80",
     rating: 5,
-    review: "ZozaGateway has become my go-to for snack cravings! The honey BBQ kettle chips are absolutely addictive. Delivery is always fast and everything arrives fresh. Highly recommend!",
+    review: "Zoza Gateway Snacks has become my go-to for snack cravings! The honey BBQ kettle chips are absolutely addictive. Delivery is always fast and everything arrives fresh. Highly recommend!",
     date: "2025-11-15T10:00:00Z",
   },
   {

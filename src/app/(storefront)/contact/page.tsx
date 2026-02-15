@@ -33,7 +33,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    details: "hello@zozagateway.com",
+    details: "hello@zozagatewaysnacks.com",
     subtext: "We reply within 24 hours",
   },
   {
