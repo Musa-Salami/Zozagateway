@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, ArrowRight } from "lucide-react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -40,7 +40,7 @@ export function CartSheet({ children }: CartSheetProps) {
       <SheetContent className="flex w-full flex-col sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-brand-500" />
+            <ShoppingCart className="h-5 w-5 text-brand-500" />
             Your Cart ({itemCount})
           </SheetTitle>
           <SheetDescription>

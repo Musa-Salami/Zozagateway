@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, ShoppingBag, BookOpen } from "lucide-react";
+import { ArrowRight, Sparkles, ShoppingCart, BookOpen } from "lucide-react";
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -98,7 +98,7 @@ export function HeroSection() {
                 size="lg"
                 className="bg-brand-500 hover:bg-brand-600 text-white px-10 h-14 text-lg font-bold shadow-lg shadow-brand-500/25 rounded-xl"
               >
-                <ShoppingBag className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Order Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

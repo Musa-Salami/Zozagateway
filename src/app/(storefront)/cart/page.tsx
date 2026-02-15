@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShoppingBag, ArrowRight, Tag, Trash2 } from "lucide-react";
+import { ShoppingCart, ArrowRight, Tag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -41,7 +41,7 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-16">
         <EmptyState
-          icon={ShoppingBag}
+          icon={ShoppingCart}
           title="Your cart is empty"
           description="Looks like you haven't added any snacks yet. Browse our menu and find something delicious!"
           actionLabel="Browse Menu"
