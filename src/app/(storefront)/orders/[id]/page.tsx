@@ -1,3 +1,6 @@
+"use client";
+
+import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, ArrowLeft, MapPin, Phone, Truck, Package } from "lucide-react";
@@ -143,8 +146,8 @@ interface OrderPageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function OrderDetailPage({ params }: OrderPageProps) {
-  const { id } = await params;
+export default function OrderDetailPage({ params }: OrderPageProps) {
+  const { id } = use(params);
   const order = sampleOrdersMap[id] ?? defaultOrder;
   const statusConfig = ORDER_STATUSES[order.status as keyof typeof ORDER_STATUSES];
 

@@ -1,3 +1,6 @@
+"use client";
+
+import { use } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ProductGrid } from "@/components/storefront/ProductGrid";
@@ -78,8 +81,8 @@ interface CategoryPageProps {
   params: Promise<{ category: string }>;
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { category } = await params;
+export default function CategoryPage({ params }: CategoryPageProps) {
+  const { category } = use(params);
   const categoryName = categoryNameMap[category] || category.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   const products = productsByCategory[category] ?? [];
 
