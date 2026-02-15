@@ -16,44 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { Product, Category, ProductImage } from "@/types";
-
-// ── Demo Data ──────────────────────────────────────────────────────────────
-
-const sampleCategories: Category[] = [
-  { id: "cat-1", name: "Chips & Crisps", slug: "chips-crisps", sortOrder: 1 },
-  { id: "cat-2", name: "Cookies & Biscuits", slug: "cookies-biscuits", sortOrder: 2 },
-  { id: "cat-3", name: "Pastries & Pies", slug: "pastries-pies", sortOrder: 3 },
-  { id: "cat-4", name: "Nuts & Trail Mix", slug: "nuts-trail-mix", sortOrder: 4 },
-  { id: "cat-5", name: "Candy & Sweets", slug: "candy-sweets", sortOrder: 5 },
-  { id: "cat-6", name: "Popcorn", slug: "popcorn", sortOrder: 6 },
-  { id: "cat-7", name: "Healthy Snacks", slug: "healthy-snacks", sortOrder: 7 },
-  { id: "cat-8", name: "Beverages", slug: "beverages", sortOrder: 8 },
-];
-
-const sampleProduct: Product = {
-  id: "p1",
-  name: "Spicy Plantain Chips",
-  slug: "spicy-plantain-chips",
-  description: "Crispy plantain chips with a fiery spicy kick. Made from locally sourced plantains, sliced thin and fried to golden perfection. Each batch is seasoned with our signature blend of chili peppers and spices.",
-  price: 8.5,
-  comparePrice: 10.0,
-  categoryId: "cat-1",
-  stock: 150,
-  sku: "ZG-001",
-  tags: ["spicy", "popular", "bestseller"],
-  dietary: ["vegan", "gluten-free"],
-  published: true,
-  featured: true,
-  images: [
-    { id: "img-1", productId: "p1", url: "https://placehold.co/400x400/F97316/fff?text=Plantain+Chips+1", publicId: "img-1", position: 0 },
-    { id: "img-2", productId: "p1", url: "https://placehold.co/400x400/EA580C/fff?text=Plantain+Chips+2", publicId: "img-2", position: 1 },
-  ],
-  averageRating: 4.5,
-  reviewCount: 32,
-  createdAt: "2025-10-01T00:00:00Z",
-  updatedAt: "2026-01-15T00:00:00Z",
-};
+import { useProductStore, CATEGORIES } from "@/stores/productStore";
+import type { ProductImage } from "@/types";
 
 // ── Page Component ──────────────────────────────────────────────────────────
 
