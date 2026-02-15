@@ -63,12 +63,29 @@ export default function EditProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  // In production, fetch product by params.id
-  const product = sampleProduct;
+  const productId = params.id as string;
+  const product = useProductStore((s) => s.products.find((p) => p.id === productId));
+  const storeUpdate = useProductStore((s) => s.updateProduct);
+  const storeDelete = useProductStore((s) => s.deleteProduct);
 
   const handleSubmit = async (data: Record<string, unknown>, images: ProductImage[]) => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const category = CATEGORIES.find((c) => c.id === data.categoryId);
+    storeUpdate(productId, {
+      name: data.name as string,
+      description: (data.description as string) || "",
+      price: Number(data.price) || 0,
+      comparePrice: data.comparePrice ? Number(data.comparePrice) : undefined,
+      categoryId: (data.categoryId as string) || "",
+      category: category || undefined,
+      stock: Number(data.stock) || 0,
+      sku: (data.sku as string) || undefined,
+      tags: (data.tags as string[]) || [],
+      dietary: (data.dietary as string[]) || [],
+      published: Boolean(data.published),
+      featured: Boolean(data.featured),
+      images: images || [],
+    });
     setIsLoading(false);
     toast.success("Product updated successfully!", {
       description: `"${data.name}" has been updated.`,
@@ -77,11 +94,23 @@ export default function EditProductPage() {
 
   const handleDelete = async () => {
     setShowDeleteDialog(false);
+    storeDelete(productId);
     toast.success("Product deleted", {
-      description: `"${product.name}" has been removed from your store.`,
+      description: `Product has been removed from your store.`,
     });
     router.push("/admin/products");
   };
+
+  if (!product) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="text-6xl mb-4">🔍</div>
+        <h2 className="text-xl font-semibold">Product not found</h2>
+        <p className="text-muted-foreground mt-2">The product you&#39;re looking for doesn&#39;t exist.</p>
+        <Button className="mt-4" asChild><Link href="/admin/products">Back to Products</Link></Button>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -110,7 +139,7 @@ export default function EditProductPage() {
       {/* Form */}
       <ProductForm
         initialData={product}
-        categories={sampleCategories}
+        categories={CATEGORIES}
         onSubmit={handleSubmit as any}
         isLoading={isLoading}
       />

@@ -54,37 +54,8 @@ import {
 } from "@/components/ui/table";
 import { formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
+import { useProductStore, CATEGORIES } from "@/stores/productStore";
 import type { Product } from "@/types";
-
-// ── Demo Data ──────────────────────────────────────────────────────────────
-
-const demoCategories = [
-  { id: "cat-1", name: "Chips & Crisps", slug: "chips-crisps", sortOrder: 1 },
-  { id: "cat-2", name: "Cookies & Biscuits", slug: "cookies-biscuits", sortOrder: 2 },
-  { id: "cat-3", name: "Pastries & Pies", slug: "pastries-pies", sortOrder: 3 },
-  { id: "cat-4", name: "Nuts & Trail Mix", slug: "nuts-trail-mix", sortOrder: 4 },
-  { id: "cat-5", name: "Candy & Sweets", slug: "candy-sweets", sortOrder: 5 },
-  { id: "cat-6", name: "Popcorn", slug: "popcorn", sortOrder: 6 },
-  { id: "cat-7", name: "Healthy Snacks", slug: "healthy-snacks", sortOrder: 7 },
-  { id: "cat-8", name: "Beverages", slug: "beverages", sortOrder: 8 },
-];
-
-const colors = ["F97316", "3B82F6", "10B981", "8B5CF6", "F43F5E", "F59E0B", "06B6D4", "EC4899"];
-
-const demoProducts: Product[] = [
-  { id: "p1", name: "Spicy Plantain Chips", slug: "spicy-plantain-chips", description: "Crispy plantain chips with a spicy kick", price: 8.5, comparePrice: 10.0, categoryId: "cat-1", category: demoCategories[0] as any, stock: 150, sku: "ZG-001", tags: ["spicy", "popular"], dietary: [], published: true, featured: true, images: [{ id: "img-1", productId: "p1", url: `https://placehold.co/300x300/${colors[0]}/fff?text=Plantain+Chips`, publicId: "p1", position: 0 }], averageRating: 4.5, reviewCount: 32, createdAt: "2025-10-01T00:00:00Z", updatedAt: "2026-01-15T00:00:00Z" },
-  { id: "p2", name: "Coconut Cookies", slug: "coconut-cookies", description: "Soft and chewy coconut cookies baked fresh", price: 7.5, categoryId: "cat-2", category: demoCategories[1] as any, stock: 200, sku: "ZG-002", tags: ["sweet"], dietary: ["gluten-free"], published: true, featured: false, images: [{ id: "img-2", productId: "p2", url: `https://placehold.co/300x300/${colors[1]}/fff?text=Coconut+Cookies`, publicId: "p2", position: 0 }], averageRating: 4.2, reviewCount: 28, createdAt: "2025-10-05T00:00:00Z", updatedAt: "2026-01-10T00:00:00Z" },
-  { id: "p3", name: "Chin Chin Original", slug: "chin-chin-original", description: "Traditional Nigerian chin chin snack", price: 6.0, categoryId: "cat-3", category: demoCategories[2] as any, stock: 300, sku: "ZG-003", tags: ["traditional"], dietary: [], published: true, featured: true, images: [{ id: "img-3", productId: "p3", url: `https://placehold.co/300x300/${colors[2]}/fff?text=Chin+Chin`, publicId: "p3", position: 0 }], averageRating: 4.7, reviewCount: 45, createdAt: "2025-10-10T00:00:00Z", updatedAt: "2026-01-12T00:00:00Z" },
-  { id: "p4", name: "Puff Puff Mix", slug: "puff-puff-mix", description: "Easy-to-make puff puff batter mix", price: 6.0, categoryId: "cat-3", category: demoCategories[2] as any, stock: 180, sku: "ZG-004", tags: ["diy"], dietary: [], published: true, featured: false, images: [{ id: "img-4", productId: "p4", url: `https://placehold.co/300x300/${colors[3]}/fff?text=Puff+Puff`, publicId: "p4", position: 0 }], averageRating: 4.0, reviewCount: 15, createdAt: "2025-10-15T00:00:00Z", updatedAt: "2026-01-08T00:00:00Z" },
-  { id: "p5", name: "Garlic Roasted Nuts", slug: "garlic-roasted-nuts", description: "Premium roasted cashews and peanuts with garlic", price: 9.0, categoryId: "cat-4", category: demoCategories[3] as any, stock: 120, sku: "ZG-005", tags: ["premium"], dietary: ["vegan", "gluten-free"], published: true, featured: true, images: [{ id: "img-5", productId: "p5", url: `https://placehold.co/300x300/${colors[4]}/fff?text=Garlic+Nuts`, publicId: "p5", position: 0 }], averageRating: 4.6, reviewCount: 22, createdAt: "2025-10-20T00:00:00Z", updatedAt: "2026-01-14T00:00:00Z" },
-  { id: "p6", name: "Honey Cashew Brittle", slug: "honey-cashew-brittle", description: "Crunchy honey-glazed cashew brittle", price: 11.0, comparePrice: 13.5, categoryId: "cat-5", category: demoCategories[4] as any, stock: 80, sku: "ZG-006", tags: ["premium", "gift"], dietary: ["gluten-free"], published: true, featured: false, images: [{ id: "img-6", productId: "p6", url: `https://placehold.co/300x300/${colors[5]}/fff?text=Brittle`, publicId: "p6", position: 0 }], averageRating: 4.8, reviewCount: 18, createdAt: "2025-11-01T00:00:00Z", updatedAt: "2026-01-11T00:00:00Z" },
-  { id: "p7", name: "Caramel Popcorn", slug: "caramel-popcorn", description: "Sweet caramel-coated popcorn", price: 5.5, categoryId: "cat-6", category: demoCategories[5] as any, stock: 250, sku: "ZG-007", tags: ["movie-night"], dietary: [], published: true, featured: false, images: [{ id: "img-7", productId: "p7", url: `https://placehold.co/300x300/${colors[6]}/fff?text=Popcorn`, publicId: "p7", position: 0 }], averageRating: 4.3, reviewCount: 40, createdAt: "2025-11-05T00:00:00Z", updatedAt: "2026-01-06T00:00:00Z" },
-  { id: "p8", name: "Tropical Trail Mix", slug: "tropical-trail-mix", description: "Dried fruits and nuts tropical blend", price: 13.0, categoryId: "cat-7", category: demoCategories[6] as any, stock: 90, sku: "ZG-008", tags: ["healthy"], dietary: ["vegan", "gluten-free"], published: true, featured: true, images: [{ id: "img-8", productId: "p8", url: `https://placehold.co/300x300/${colors[7]}/fff?text=Trail+Mix`, publicId: "p8", position: 0 }], averageRating: 4.4, reviewCount: 12, createdAt: "2025-11-10T00:00:00Z", updatedAt: "2026-01-13T00:00:00Z" },
-  { id: "p9", name: "Ginger Snap Biscuits", slug: "ginger-snap-biscuits", description: "Crunchy ginger-flavored biscuits", price: 5.0, categoryId: "cat-2", category: demoCategories[1] as any, stock: 220, sku: "ZG-009", tags: ["classic"], dietary: [], published: true, featured: false, images: [{ id: "img-9", productId: "p9", url: `https://placehold.co/300x300/${colors[0]}/fff?text=Ginger+Snaps`, publicId: "p9", position: 0 }], averageRating: 4.1, reviewCount: 25, createdAt: "2025-11-15T00:00:00Z", updatedAt: "2026-01-05T00:00:00Z" },
-  { id: "p10", name: "Zobo Drink Mix", slug: "zobo-drink-mix", description: "Hibiscus tea drink mix sachets", price: 4.0, categoryId: "cat-8", category: demoCategories[7] as any, stock: 350, sku: "ZG-010", tags: ["drink", "traditional"], dietary: ["vegan"], published: true, featured: false, images: [{ id: "img-10", productId: "p10", url: `https://placehold.co/300x300/${colors[1]}/fff?text=Zobo`, publicId: "p10", position: 0 }], averageRating: 4.0, reviewCount: 35, createdAt: "2025-11-20T00:00:00Z", updatedAt: "2026-01-04T00:00:00Z" },
-  { id: "p11", name: "Suya Spice Cashews", slug: "suya-spice-cashews", description: "Cashews coated in authentic suya spice", price: 10.5, categoryId: "cat-4", category: demoCategories[3] as any, stock: 0, sku: "ZG-011", tags: ["spicy", "premium"], dietary: ["vegan"], published: false, featured: false, images: [{ id: "img-11", productId: "p11", url: `https://placehold.co/300x300/${colors[2]}/fff?text=Suya+Cashews`, publicId: "p11", position: 0 }], averageRating: 4.9, reviewCount: 8, createdAt: "2025-12-01T00:00:00Z", updatedAt: "2026-01-02T00:00:00Z" },
-  { id: "p12", name: "Butter Scotch Candy", slug: "butter-scotch-candy", description: "Classic butterscotch hard candy", price: 3.5, categoryId: "cat-5", category: demoCategories[4] as any, stock: 500, sku: "ZG-012", tags: ["classic", "value"], dietary: [], published: true, featured: false, images: [{ id: "img-12", productId: "p12", url: `https://placehold.co/300x300/${colors[3]}/fff?text=Butterscotch`, publicId: "p12", position: 0 }], averageRating: 3.8, reviewCount: 20, createdAt: "2025-12-05T00:00:00Z", updatedAt: "2026-01-01T00:00:00Z" },
-];
 
 // ── Page Component ──────────────────────────────────────────────────────────
 
@@ -101,7 +72,9 @@ export default function ProductsPage() {
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [deleteDialog, setDeleteDialog] = useState<string | null>(null);
-  const [products, setProducts] = useState(demoProducts);
+  const products = useProductStore((s) => s.products);
+  const storeDeleteProduct = useProductStore((s) => s.deleteProduct);
+  const storeUpdateProduct = useProductStore((s) => s.updateProduct);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -168,16 +141,15 @@ export default function ProductsPage() {
   }, [products, search, categoryFilter, statusFilter, sortField, sortDir]);
 
   const handleDelete = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+    storeDeleteProduct(id);
     setDeleteDialog(null);
   };
 
   const handleStockUpdate = (id: string, delta: number) => {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, stock: Math.max(0, p.stock + delta) } : p
-      )
-    );
+    const product = products.find((p) => p.id === id);
+    if (product) {
+      storeUpdateProduct(id, { stock: Math.max(0, product.stock + delta) });
+    }
   };
 
   return (
@@ -218,7 +190,7 @@ export default function ProductsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
-              {demoCategories.map((cat) => (
+              {CATEGORIES.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id}>
                   {cat.name}
                 </SelectItem>
