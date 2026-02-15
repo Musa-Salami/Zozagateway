@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  DollarSign,
+  Banknote,
   ShoppingBag,
   Clock,
   Package,
@@ -321,9 +321,9 @@ export default function AdminDashboardPage() {
       >
         <StatsCard
           title="Total Revenue"
-          value="$12,450"
+          value="₦4,850,000"
           change={8.2}
-          icon={DollarSign}
+          icon={Banknote}
           color="orange"
         />
         <StatsCard

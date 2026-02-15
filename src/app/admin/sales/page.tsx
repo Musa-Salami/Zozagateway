@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
-  DollarSign,
+  Banknote,
   ShoppingBag,
   TrendingUp,
   Percent,
@@ -93,8 +93,8 @@ const netRevenue = Math.round(grossRevenue * 0.88);
 const avgOrderValue = Math.round((grossRevenue / totalOrders) * 100) / 100;
 
 const metrics = [
-  { title: "Gross Revenue", value: formatPrice(grossRevenue), change: 12.5, icon: DollarSign, color: "text-brand-500 bg-brand-500/10" },
-  { title: "Net Revenue", value: formatPrice(netRevenue), change: 10.2, icon: DollarSign, color: "text-emerald-500 bg-emerald-500/10" },
+  { title: "Gross Revenue", value: formatPrice(grossRevenue), change: 12.5, icon: Banknote, color: "text-brand-500 bg-brand-500/10" },
+  { title: "Net Revenue", value: formatPrice(netRevenue), change: 10.2, icon: Banknote, color: "text-emerald-500 bg-emerald-500/10" },
   { title: "Avg Order Value", value: formatPrice(avgOrderValue), change: 3.8, icon: TrendingUp, color: "text-blue-500 bg-blue-500/10" },
   { title: "Total Orders", value: formatNumber(totalOrders), change: 15.1, icon: ShoppingBag, color: "text-purple-500 bg-purple-500/10" },
   { title: "Conversion Rate", value: "3.2%", change: 0.5, icon: Percent, color: "text-rose-500 bg-rose-500/10" },

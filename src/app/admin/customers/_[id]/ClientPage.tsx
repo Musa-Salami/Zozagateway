@@ -10,7 +10,7 @@ import {
   Phone,
   Calendar,
   ShoppingBag,
-  DollarSign,
+  Banknote,
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -223,7 +223,7 @@ export default function CustomerDetailPage() {
             <Card>
               <CardContent className="flex items-center gap-4 py-4">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10">
-                  <DollarSign className="h-5 w-5 text-emerald-500" />
+                  <Banknote className="h-5 w-5 text-emerald-500" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Total Spent</p>

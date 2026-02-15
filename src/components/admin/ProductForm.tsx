@@ -196,7 +196,7 @@ export function ProductForm({
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price ($)</Label>
+                  <Label htmlFor="price">Price (₦)</Label>
                   <Input
                     id="price"
                     type="number"
@@ -212,7 +212,7 @@ export function ProductForm({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="comparePrice">Compare Price ($)</Label>
+                  <Label htmlFor="comparePrice">Compare Price (₦)</Label>
                   <Input
                     id="comparePrice"
                     type="number"

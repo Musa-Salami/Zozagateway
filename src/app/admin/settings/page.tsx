@@ -35,12 +35,12 @@ export default function SettingsPage() {
   const [storeDescription, setStoreDescription] = useState(
     "Freshly made snacks, delivered to your doorstep"
   );
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("NGN");
   const [timezone, setTimezone] = useState("Africa/Lagos");
 
   // Delivery Settings
-  const [deliveryFee, setDeliveryFee] = useState("3.99");
-  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState("25.00");
+  const [deliveryFee, setDeliveryFee] = useState("1500");
+  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState("12500");
   const [deliveryAreas, setDeliveryAreas] = useState(
     "Victoria Island, Lekki, Ikoyi, Surulere, Yaba, Ikeja, Ajah"
   );
@@ -140,8 +140,8 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="USD">USD ($)</SelectItem>
                       <SelectItem value="NGN">NGN (₦)</SelectItem>
+                      <SelectItem value="USD">USD ($)</SelectItem>
                       <SelectItem value="GBP">GBP (£)</SelectItem>
                       <SelectItem value="EUR">EUR (€)</SelectItem>
                     </SelectContent>
@@ -187,7 +187,7 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="delivery-fee">Delivery Fee ($)</Label>
+                  <Label htmlFor="delivery-fee">Delivery Fee (₦)</Label>
                   <Input
                     id="delivery-fee"
                     type="number"
@@ -200,7 +200,7 @@ export default function SettingsPage() {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="free-threshold">Free Delivery Threshold ($)</Label>
+                  <Label htmlFor="free-threshold">Free Delivery Threshold (₦)</Label>
                   <Input
                     id="free-threshold"
                     type="number"

@@ -108,7 +108,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                 tickLine={false}
                 tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                 tickFormatter={(val: number) =>
-                  val >= 1000 ? `$${(val / 1000).toFixed(0)}k` : `$${val}`
+                  val >= 1000 ? `₦${(val / 1000).toFixed(0)}k` : `₦${val}`
                 }
                 dx={-10}
               />

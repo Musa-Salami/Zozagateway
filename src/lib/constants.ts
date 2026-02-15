@@ -2,8 +2,8 @@ export const SITE_NAME = "Zoza Gateway Snacks";
 export const SITE_DESCRIPTION = "Freshly made snacks, delivered to your doorstep";
 export const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-export const DELIVERY_FEE = 3.99;
-export const FREE_DELIVERY_THRESHOLD = 25.0;
+export const DELIVERY_FEE = 1500;
+export const FREE_DELIVERY_THRESHOLD = 12500;
 export const MAX_UPLOAD_IMAGES = 5;
 export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 

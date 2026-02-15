@@ -56,12 +56,12 @@ function AnimatedCounter({ value }: { value: string }) {
   const count = useMotionValue(0);
   const rounded = useTransform(count, (latest) => {
     if (numericValue >= 1000) {
-      return latest.toLocaleString("en-US", {
+      return latest.toLocaleString("en-NG", {
         minimumFractionDigits: numericValue % 1 !== 0 ? 2 : 0,
         maximumFractionDigits: 2,
       });
     }
-    return latest.toLocaleString("en-US", {
+    return latest.toLocaleString("en-NG", {
       maximumFractionDigits: 2,
     });
   });
