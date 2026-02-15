@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, MessageCircle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const floatingEmojis = [
@@ -82,26 +82,46 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            className="mt-10 flex flex-col items-center justify-center gap-4"
           >
+            {/* Primary CTA */}
             <Link href="/menu">
               <Button
                 size="lg"
-                className="bg-brand-500 hover:bg-brand-600 text-white px-8 h-12 text-base font-semibold shadow-lg shadow-brand-500/25"
+                className="bg-brand-500 hover:bg-brand-600 text-white px-10 h-14 text-lg font-bold shadow-lg shadow-brand-500/25 rounded-xl"
               >
+                <ArrowRight className="mr-2 h-5 w-5" />
                 Order Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/menu">
-              <Button
-                variant="outline"
-                size="lg"
-                className="px-8 h-12 text-base font-semibold"
+
+            {/* Secondary CTAs */}
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <a
+                href="https://wa.me/c/2349039412203"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                View Menu
-              </Button>
-            </Link>
+                <Button
+                  size="lg"
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 h-12 text-base font-semibold shadow-lg shadow-green-600/25 rounded-xl"
+                >
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  WhatsApp Order
+                </Button>
+              </a>
+              <Link href="/menu">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 h-12 text-base font-semibold rounded-xl"
+                >
+                  <BookOpen className="mr-2 h-5 w-5" />
+                  Browse Menu
+                </Button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>
