@@ -3,7 +3,7 @@ import { create } from "zustand";
 /* ── Admin credentials ──────────────────────────────────────────────── */
 
 const ADMIN_EMAIL = "zozagatewaysnacks@gmail.com";
-const ADMIN_PASSWORD = "ZoZaZee2";
+const ADMIN_PASSWORD = "ZozaZee2";
 const STORAGE_KEY = "zoza_admin_auth";
 
 /* ── Store shape ─────────────────────────────────────────────────────── */
