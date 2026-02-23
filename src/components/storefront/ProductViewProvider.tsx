@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Check,
   X,
+  ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +25,27 @@ import { useProductStore } from "@/stores/productStore";
 import { formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
+
+const PLACEHOLDER = "/images/placeholder-product.png";
+
+/** Returns true if the URL is valid (not a blob: URL) */
+function isValidImageUrl(url?: string): boolean {
+  if (!url) return false;
+  if (url.startsWith("blob:")) return false;
+  return true;
+}
+
+function safeImageUrl(url?: string): string {
+  return isValidImageUrl(url) ? url! : PLACEHOLDER;
+}
+
+/** onError handler: swap broken images with a placeholder */
+function handleImgError(e: React.SyntheticEvent<HTMLImageElement>) {
+  const target = e.currentTarget;
+  if (target.src !== PLACEHOLDER) {
+    target.src = PLACEHOLDER;
+  }
+}
 
 /* ── Context ──────────────────────────────────────────────────────────── */
 
@@ -103,12 +125,10 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                   <div className="relative aspect-square overflow-hidden rounded-xl bg-muted mb-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={
-                        product.images[selectedImage]?.url ??
-                        "/images/placeholder-product.png"
-                      }
+                      src={safeImageUrl(product.images[selectedImage]?.url)}
                       alt={product.name}
                       className="h-full w-full object-cover"
+                      onError={handleImgError}
                     />
                     {hasDiscount && (
                       <Badge className="absolute top-3 left-3 bg-red-500 text-white text-sm px-3 py-1">
@@ -138,9 +158,10 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={img.url}
+                            src={safeImageUrl(img.url)}
                             alt={`${product.name} ${idx + 1}`}
                             className="h-full w-full object-cover"
+                            onError={handleImgError}
                           />
                         </button>
                       ))}
@@ -346,9 +367,10 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                               <div className="relative h-10 w-10 overflow-hidden rounded-md bg-muted flex-shrink-0">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                  src={rp.images?.[0]?.url ?? "/images/placeholder-product.png"}
+                                  src={safeImageUrl(rp.images?.[0]?.url)}
                                   alt={rp.name}
                                   className="h-full w-full object-cover"
+                                  onError={handleImgError}
                                 />
                               </div>
                               <div className="min-w-0">

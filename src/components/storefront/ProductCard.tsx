@@ -23,7 +23,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const { openProduct } = useProductView();
 
   const primaryImage =
-    product.images?.[0]?.url || "/images/placeholder-product.png";
+    product.images?.[0]?.url && !product.images[0].url.startsWith("blob:")
+      ? product.images[0].url
+      : "/images/placeholder-product.png";
   const hasDiscount =
     product.comparePrice != null && product.comparePrice > product.price;
 
@@ -45,6 +47,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             src={primaryImage}
             alt={product.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            onError={(e) => { e.currentTarget.src = "/images/placeholder-product.png"; }}
           />
           {hasDiscount && (
             <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white">

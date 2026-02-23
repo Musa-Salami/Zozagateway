@@ -233,6 +233,15 @@ export const useProductStore = create<ProductStore>()(
 }),
     {
       name: "zozagateway-products",
+      onRehydrateStorage: () => (state) => {
+        // Clean up any invalid blob: URLs from images saved before the base64 fix
+        if (state) {
+          state.products = state.products.map((p) => ({
+            ...p,
+            images: p.images.filter((img) => img.url && !img.url.startsWith("blob:")),
+          }));
+        }
+      },
     }
   )
 );
