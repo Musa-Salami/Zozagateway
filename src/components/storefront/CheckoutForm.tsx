@@ -80,7 +80,7 @@ interface CheckoutFormProps {
 export function CheckoutForm({ className }: CheckoutFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [copiedAccount, setCopiedAccount] = useState(false);
 
   const items = useCartStore((state) => state.items);
@@ -134,12 +134,12 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
-    if (items.length === 0) {
-      toast.error("Your cart is empty");
-      return;
-    }
     if (!paymentMethod) {
       toast.error("Please select a payment method");
+      return;
+    }
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
       return;
     }
     setIsSubmitting(true);
@@ -693,7 +693,7 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
           ) : (
             <Button
               type="submit"
-              disabled={isSubmitting || items.length === 0}
+              disabled={isSubmitting || items.length === 0 || !paymentMethod}
               className="bg-brand-500 hover:bg-brand-600 text-white"
             >
               {isSubmitting ? (
