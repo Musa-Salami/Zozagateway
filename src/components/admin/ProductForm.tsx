@@ -103,14 +103,25 @@ export function ProductForm({
   };
 
   const handleImageUpload = async (files: File[]) => {
-    // Simulate upload - in production this would call an API
-    const newImages: ProductImage[] = files.map((file, i) => ({
-      id: `temp-${Date.now()}-${i}`,
-      productId: initialData?.id ?? "",
-      url: URL.createObjectURL(file),
-      publicId: `temp-${Date.now()}-${i}`,
-      position: images.length + i,
-    }));
+    // Convert files to persistent base64 data URLs
+    const newImages: ProductImage[] = await Promise.all(
+      files.map(
+        (file, i) =>
+          new Promise<ProductImage>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              resolve({
+                id: `img-${Date.now()}-${i}`,
+                productId: initialData?.id ?? "",
+                url: reader.result as string,
+                publicId: `img-${Date.now()}-${i}`,
+                position: images.length + i,
+              });
+            };
+            reader.readAsDataURL(file);
+          })
+      )
+    );
     setImages((prev) => [...prev, ...newImages]);
   };
 
