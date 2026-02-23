@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
 import {
   MapPin,
   Phone,
@@ -16,6 +15,11 @@ import {
   ArrowLeft,
   Check,
   Loader2,
+  Banknote,
+  Building2,
+  Wallet,
+  Copy,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +33,10 @@ import { toast } from "sonner";
 import { formatPrice } from "@/lib/formatters";
 import { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { generateOrderNumber } from "@/lib/utils";
+
+// ── Payment method type ───────────────────────────────────────
+type PaymentMethod = "cash" | "transfer" | "card";
 
 // ── Checkout form schema ──────────────────────────────────────
 const checkoutSchema = z
@@ -58,14 +66,22 @@ type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
 const STEPS = ["Delivery Details", "Order Review", "Payment"];
 
+// ── Transfer details (customize for your business) ────────────
+const TRANSFER_DETAILS = {
+  bankName: "First Bank of Nigeria",
+  accountNumber: "1234567890",
+  accountName: "Zoza Gateway Snacks",
+};
+
 interface CheckoutFormProps {
   className?: string;
 }
 
 export function CheckoutForm({ className }: CheckoutFormProps) {
-  const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [copiedAccount, setCopiedAccount] = useState(false);
 
   const items = useCartStore((state) => state.items);
   const getSubtotal = useCartStore((state) => state.getSubtotal);
@@ -118,43 +134,25 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
-    if (!session?.user) {
-      toast.error("Please sign in to place an order");
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+    if (!paymentMethod) {
+      toast.error("Please select a payment method");
       return;
     }
     setIsSubmitting(true);
     try {
-      const orderPayload = {
-        items: items.map((item) => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-        })),
-        deliveryType: data.deliveryType,
-        address: data.deliveryType === "DELIVERY" ? data.address : undefined,
-        city: data.deliveryType === "DELIVERY" ? data.city : undefined,
-        phone: data.phone,
-        notes: data.notes || undefined,
-        promoCode: data.promoCode?.trim() || undefined,
-      };
+      // Simulate order processing
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const res = await fetch("/api/v1/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderPayload),
-        credentials: "include",
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        toast.error(result.error || "Failed to place order");
-        return;
-      }
-
+      const orderNum = generateOrderNumber();
       clearCart();
       window.dispatchEvent(
-        new CustomEvent("order-success", { detail: { orderNumber: result.orderNumber } })
+        new CustomEvent("order-success", { detail: { orderNumber: orderNum } })
       );
+      toast.success("Order placed successfully!");
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error("Something went wrong. Please try again.");
@@ -163,32 +161,12 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
     }
   };
 
-  // Require sign-in to checkout
-  if (status === "loading") {
-    return (
-      <div className={cn("max-w-2xl mx-auto flex items-center justify-center py-16", className)}>
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session?.user) {
-    return (
-      <div className={cn("max-w-2xl mx-auto", className)}>
-        <Card>
-          <CardContent className="pt-6 text-center space-y-4">
-            <p className="text-muted-foreground">Please sign in to complete your checkout.</p>
-            <Link href="/auth/signin?callbackUrl=/checkout">
-              <Button className="bg-brand-500 hover:bg-brand-600">Sign In</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const copyAccountNumber = () => {
+    navigator.clipboard.writeText(TRANSFER_DETAILS.accountNumber);
+    setCopiedAccount(true);
+    toast.success("Account number copied!");
+    setTimeout(() => setCopiedAccount(false), 2000);
+  };
 
   return (
     <div className={cn("max-w-2xl mx-auto", className)}>
@@ -469,22 +447,211 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-brand-500" />
-                Payment
+                <Wallet className="h-5 w-5 text-brand-500" />
+                Choose Payment Method
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Placeholder for Stripe Elements */}
-              <div className="rounded-lg border-2 border-dashed border-muted-foreground/30 p-8 text-center">
-                <CreditCard className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" />
-                <p className="text-sm font-medium text-muted-foreground">
-                  Stripe Payment Element
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Secure payment processing will be integrated here
-                </p>
+            <CardContent className="space-y-4">
+              {/* Payment Options */}
+              <div className="grid gap-3">
+                {/* Cash Payment */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("cash")}
+                  className={cn(
+                    "flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all",
+                    paymentMethod === "cash"
+                      ? "border-brand-500 bg-brand-500/5 ring-1 ring-brand-500/20"
+                      : "border-muted-foreground/20 hover:border-muted-foreground/40"
+                  )}
+                >
+                  <div className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-full",
+                    paymentMethod === "cash" ? "bg-brand-500/10" : "bg-muted"
+                  )}>
+                    <Banknote className={cn("h-6 w-6", paymentMethod === "cash" ? "text-brand-500" : "text-muted-foreground")} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Cash on Delivery</p>
+                    <p className="text-xs text-muted-foreground">
+                      Pay with cash when your order arrives
+                    </p>
+                  </div>
+                  <div className={cn(
+                    "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                    paymentMethod === "cash"
+                      ? "border-brand-500 bg-brand-500"
+                      : "border-muted-foreground/30"
+                  )}>
+                    {paymentMethod === "cash" && <Check className="h-3 w-3 text-white" />}
+                  </div>
+                </button>
+
+                {/* Bank Transfer */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("transfer")}
+                  className={cn(
+                    "flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all",
+                    paymentMethod === "transfer"
+                      ? "border-brand-500 bg-brand-500/5 ring-1 ring-brand-500/20"
+                      : "border-muted-foreground/20 hover:border-muted-foreground/40"
+                  )}
+                >
+                  <div className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-full",
+                    paymentMethod === "transfer" ? "bg-brand-500/10" : "bg-muted"
+                  )}>
+                    <Building2 className={cn("h-6 w-6", paymentMethod === "transfer" ? "text-brand-500" : "text-muted-foreground")} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Bank Transfer</p>
+                    <p className="text-xs text-muted-foreground">
+                      Transfer to our bank account before delivery
+                    </p>
+                  </div>
+                  <div className={cn(
+                    "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                    paymentMethod === "transfer"
+                      ? "border-brand-500 bg-brand-500"
+                      : "border-muted-foreground/30"
+                  )}>
+                    {paymentMethod === "transfer" && <Check className="h-3 w-3 text-white" />}
+                  </div>
+                </button>
+
+                {/* Card Payment */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("card")}
+                  className={cn(
+                    "flex items-center gap-4 rounded-xl border-2 p-4 text-left transition-all",
+                    paymentMethod === "card"
+                      ? "border-brand-500 bg-brand-500/5 ring-1 ring-brand-500/20"
+                      : "border-muted-foreground/20 hover:border-muted-foreground/40"
+                  )}
+                >
+                  <div className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-full",
+                    paymentMethod === "card" ? "bg-brand-500/10" : "bg-muted"
+                  )}>
+                    <CreditCard className={cn("h-6 w-6", paymentMethod === "card" ? "text-brand-500" : "text-muted-foreground")} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold">Card Payment</p>
+                    <p className="text-xs text-muted-foreground">
+                      Pay securely with your debit or credit card
+                    </p>
+                  </div>
+                  <div className={cn(
+                    "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                    paymentMethod === "card"
+                      ? "border-brand-500 bg-brand-500"
+                      : "border-muted-foreground/30"
+                  )}>
+                    {paymentMethod === "card" && <Check className="h-3 w-3 text-white" />}
+                  </div>
+                </button>
               </div>
 
+              {/* Transfer Details (shown when transfer is selected) */}
+              {paymentMethod === "transfer" && (
+                <div className="rounded-xl border bg-blue-50/50 dark:bg-blue-950/20 p-4 space-y-3">
+                  <p className="text-sm font-semibold text-blue-700 dark:text-blue-400">
+                    Transfer Details
+                  </p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Bank</span>
+                      <span className="font-medium">{TRANSFER_DETAILS.bankName}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Account No.</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-base">{TRANSFER_DETAILS.accountNumber}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={copyAccountNumber}
+                        >
+                          {copiedAccount ? (
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Account Name</span>
+                      <span className="font-medium">{TRANSFER_DETAILS.accountName}</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Amount</span>
+                      <span className="font-bold text-brand-500">
+                        {formatPrice(deliveryType === "PICKUP" ? subtotal : total)}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Please include your phone number as the transfer reference. Your order will be confirmed once payment is verified.
+                  </p>
+                </div>
+              )}
+
+              {/* Card Details (shown when card is selected) */}
+              {paymentMethod === "card" && (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cardNumber">Card Number</Label>
+                    <Input id="cardNumber" placeholder="0000 0000 0000 0000" maxLength={19} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="expiry">Expiry Date</Label>
+                      <Input id="expiry" placeholder="MM/YY" maxLength={5} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cvv">CVV</Label>
+                      <Input id="cvv" placeholder="123" maxLength={4} type="password" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cardName">Cardholder Name</Label>
+                    <Input id="cardName" placeholder="Name on card" />
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CreditCard className="h-3.5 w-3.5" />
+                    <span>Your card details are encrypted and secure</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Cash info (shown when cash is selected) */}
+              {paymentMethod === "cash" && (
+                <div className="rounded-xl border bg-green-50/50 dark:bg-green-950/20 p-4">
+                  <div className="flex items-start gap-3">
+                    <Banknote className="h-5 w-5 text-green-600 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                        Cash on Delivery
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Please have the exact amount of{" "}
+                        <span className="font-semibold text-brand-500">
+                          {formatPrice(deliveryType === "PICKUP" ? subtotal : total)}
+                        </span>{" "}
+                        ready when your order arrives. Our delivery agent will collect the payment.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Amount Summary */}
               <div className="rounded-lg bg-muted/50 p-4">
                 <div className="flex justify-between text-base font-semibold">
                   <span>Amount to Pay</span>
