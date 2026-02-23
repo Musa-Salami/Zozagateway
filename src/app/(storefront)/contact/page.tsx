@@ -13,7 +13,7 @@ import {
   CheckCircle2,
   Facebook,
   Instagram,
-  Twitter,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,9 +53,9 @@ const contactInfo = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Facebook, href: "https://www.facebook.com/abdullahi.zuleihat.14", label: "Facebook" },
+  { icon: Instagram, href: "https://www.instagram.com/zoza.gatewaysnacks/", label: "Instagram" },
+  { icon: MessageCircle, href: "https://wa.me/c/2349039412203", label: "WhatsApp" },
 ];
 
 const sectionVariants = {

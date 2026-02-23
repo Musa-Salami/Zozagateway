@@ -4,7 +4,7 @@ import Link from "next/link";
 import {
   Facebook,
   Instagram,
-  Twitter,
+  MessageCircle,
   Mail,
   Phone,
   MapPin,
@@ -25,9 +25,9 @@ const categories = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: Facebook, href: "https://www.facebook.com/abdullahi.zuleihat.14", label: "Facebook" },
+  { icon: Instagram, href: "https://www.instagram.com/zoza.gatewaysnacks/", label: "Instagram" },
+  { icon: MessageCircle, href: "https://wa.me/c/2349039412203", label: "WhatsApp" },
 ];
 
 export function Footer() {
