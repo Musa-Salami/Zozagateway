@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useSession } from "next-auth/react";
 import {
   MapPin,
   Phone,
@@ -23,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useCartStore } from "@/stores/cartStore";
+import { toast } from "sonner";
 import { formatPrice } from "@/lib/formatters";
 import { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -36,6 +39,7 @@ const checkoutSchema = z
     address: z.string().optional(),
     city: z.string().optional(),
     notes: z.string().optional(),
+    promoCode: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -59,11 +63,13 @@ interface CheckoutFormProps {
 }
 
 export function CheckoutForm({ className }: CheckoutFormProps) {
+  const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const items = useCartStore((state) => state.items);
   const getSubtotal = useCartStore((state) => state.getSubtotal);
+  const clearCart = useCartStore((state) => state.clearCart);
 
   const subtotal = getSubtotal();
   const deliveryFee =
@@ -86,6 +92,7 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
       address: "",
       city: "",
       notes: "",
+      promoCode: "",
     },
   });
 
@@ -111,19 +118,77 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
+    if (!session?.user) {
+      toast.error("Please sign in to place an order");
+      return;
+    }
     setIsSubmitting(true);
     try {
-      // In production, this would call your order API and payment processor
-      console.log("Order submitted:", { ...data, items, total });
-      // Simulated delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // Navigate to success page or show confirmation
+      const orderPayload = {
+        items: items.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+        })),
+        deliveryType: data.deliveryType,
+        address: data.deliveryType === "DELIVERY" ? data.address : undefined,
+        city: data.deliveryType === "DELIVERY" ? data.city : undefined,
+        phone: data.phone,
+        notes: data.notes || undefined,
+        promoCode: data.promoCode?.trim() || undefined,
+      };
+
+      const res = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload),
+        credentials: "include",
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result.error || "Failed to place order");
+        return;
+      }
+
+      clearCart();
+      window.dispatchEvent(
+        new CustomEvent("order-success", { detail: { orderNumber: result.orderNumber } })
+      );
     } catch (error) {
       console.error("Checkout error:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // Require sign-in to checkout
+  if (status === "loading") {
+    return (
+      <div className={cn("max-w-2xl mx-auto flex items-center justify-center py-16", className)}>
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session?.user) {
+    return (
+      <div className={cn("max-w-2xl mx-auto", className)}>
+        <Card>
+          <CardContent className="pt-6 text-center space-y-4">
+            <p className="text-muted-foreground">Please sign in to complete your checkout.</p>
+            <Link href="/auth/signin?callbackUrl=/checkout">
+              <Button className="bg-brand-500 hover:bg-brand-600">Sign In</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className={cn("max-w-2xl mx-auto", className)}>
@@ -371,6 +436,15 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
                           formatPrice(deliveryFee)
                         )}
                       </span>
+                    </div>
+                    <div className="space-y-2 pt-2">
+                      <Label htmlFor="promoCode" className="text-sm">Promo Code</Label>
+                      <Input
+                        id="promoCode"
+                        placeholder="e.g. SNACK10"
+                        {...register("promoCode")}
+                        className="h-9"
+                      />
                     </div>
                     <Separator />
                     <div className="flex justify-between text-base font-semibold">

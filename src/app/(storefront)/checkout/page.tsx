@@ -25,17 +25,17 @@ export default function CheckoutPage() {
     }
   }, [items.length, orderComplete, router]);
 
-  // Listen for form submission success (simulated)
+  // Listen for form submission success from CheckoutForm
   useEffect(() => {
-    const handleOrderSuccess = () => {
-      const num = generateOrderNumber();
+    const handleOrderSuccess = (e: CustomEvent<{ orderNumber: string }>) => {
+      const num = e.detail?.orderNumber ?? generateOrderNumber();
       setOrderNumber(num);
       setOrderComplete(true);
       clearCart();
     };
 
-    window.addEventListener("order-success", handleOrderSuccess);
-    return () => window.removeEventListener("order-success", handleOrderSuccess);
+    window.addEventListener("order-success", handleOrderSuccess as EventListener);
+    return () => window.removeEventListener("order-success", handleOrderSuccess as EventListener);
   }, [clearCart]);
 
   const copyOrderNumber = () => {

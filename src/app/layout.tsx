@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { SessionProvider } from "@/components/shared/SessionProvider";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${plusJakarta.variable} font-body`}>
+        <SessionProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -48,6 +50,7 @@ export default function RootLayout({
             }}
           />
         </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
