@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { Product, Category } from "@/types";
 
 /* ── Categories ──────────────────────────────────────────────────────── */
@@ -173,9 +174,11 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-/* ── Store (NO persist → no hydration issues) ────────────────────────── */
+/* ── Store (persisted to localStorage) ────────────────────────────────── */
 
-export const useProductStore = create<ProductStore>()((set, get) => ({
+export const useProductStore = create<ProductStore>()(
+  persist(
+    (set, get) => ({
   products: defaultProducts,
 
   addProduct: (data) => {
@@ -227,4 +230,9 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
   },
 
   getProduct: (id) => get().products.find((p) => p.id === id),
-}));
+}),
+    {
+      name: "zozagateway-products",
+    }
+  )
+);
