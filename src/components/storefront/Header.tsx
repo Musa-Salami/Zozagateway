@@ -158,22 +158,6 @@ export function Header() {
                   <SearchBar onClose={() => setMobileMenuOpen(false)} />
                 </div>
 
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors",
-                      pathname === link.href
-                        ? "bg-brand-50 text-brand-500 dark:bg-brand-500/10"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-
                 <div className="mt-2 border-t pt-4">
                   <Link
                     href="/admin"
