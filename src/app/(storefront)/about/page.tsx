@@ -47,7 +47,7 @@ const teamMembers = [
     name: "Zara Okonkwo",
     role: "Founder & CEO",
     bio: "Passionate foodie who started Zoza Gateway Snacks from her home kitchen. Zara brings 10+ years of culinary expertise.",
-    avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200",
+    avatar: "/images/ceo.jpg",
   },
   {
     name: "David Kim",
@@ -152,12 +152,12 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
+            <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-muted shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600"
-                alt="Zoza Gateway Snacks kitchen"
+                src="/images/about-us.png"
+                alt="Zoza Gateway Snacks – freshly made snacks"
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
