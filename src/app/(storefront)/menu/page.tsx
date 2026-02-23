@@ -144,6 +144,7 @@ function FilterSidebar({
 }
 
 export default function MenuPage() {
+  const hasHydrated = useProductStore((s) => s._hasHydrated);
   const allProducts = useProductStore((s) => s.products);
   const publishedProducts = useMemo(
     () => allProducts.filter((p) => p.published),
@@ -156,6 +157,14 @@ export default function MenuPage() {
   const [priceMax, setPriceMax] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("popular");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>

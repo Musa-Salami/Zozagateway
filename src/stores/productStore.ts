@@ -1,7 +1,16 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import type { Product, Category } from "@/types";
 
 /* ── Categories ──────────────────────────────────────────────────────── */
@@ -17,7 +26,7 @@ export const CATEGORIES: Category[] = [
   { id: "cat-8", name: "Beverages", slug: "beverages", sortOrder: 8, _count: { products: 0 } },
 ];
 
-/* ── Default Products ────────────────────────────────────────────────── */
+/* ── Default Products (seeded to Firestore on first run) ─────────────── */
 
 const defaultProducts: Product[] = [
   {
@@ -158,11 +167,13 @@ const defaultProducts: Product[] = [
 
 interface ProductStore {
   products: Product[];
-  addProduct: (data: Omit<Product, "id" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount">) => void;
-  updateProduct: (id: string, data: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  duplicateProduct: (id: string) => void;
+  _hasHydrated: boolean;
+  addProduct: (data: Omit<Product, "id" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount">) => Promise<void>;
+  updateProduct: (id: string, data: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
+  duplicateProduct: (id: string) => Promise<void>;
   getProduct: (id: string) => Product | undefined;
+  _initListener: () => void;
 }
 
 /* ── Helper ──────────────────────────────────────────────────────────── */
@@ -174,14 +185,75 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-/* ── Store (persisted to localStorage) ────────────────────────────────── */
+/* ── Firestore collection ────────────────────────────────────────────── */
 
-export const useProductStore = create<ProductStore>()(
-  persist(
-    (set, get) => ({
-  products: defaultProducts,
+const PRODUCTS_COLLECTION = "products";
 
-  addProduct: (data) => {
+/* ── Seed defaults if collection is empty ────────────────────────────── */
+
+async function seedDefaultProducts() {
+  try {
+    const snap = await getDocs(collection(db, PRODUCTS_COLLECTION));
+    if (snap.empty) {
+      console.log("[productStore] Seeding default products to Firestore...");
+      const writes = defaultProducts.map((p) =>
+        setDoc(doc(db, PRODUCTS_COLLECTION, p.id), p)
+      );
+      await Promise.all(writes);
+    }
+  } catch (error) {
+    console.error("[productStore] Failed to seed defaults:", error);
+  }
+}
+
+/* ── Guard against duplicate listener init ───────────────────────────── */
+
+let _listenerInitialized = false;
+
+/* ── Store (Firestore-backed) ─────────────────────────────────────────── */
+
+export const useProductStore = create<ProductStore>()((set, get) => ({
+  products: [],
+  _hasHydrated: false,
+
+  /* ── Start Firestore real-time listener ───────────────── */
+  _initListener: () => {
+    if (_listenerInitialized) return;
+    _listenerInitialized = true;
+
+    // Seed defaults first (no-op if collection already has docs)
+    seedDefaultProducts();
+
+    onSnapshot(
+      collection(db, PRODUCTS_COLLECTION),
+      (snapshot) => {
+        const products = snapshot.docs.map((d) => {
+          const data = d.data() as Product;
+          // Clean up any invalid blob: URLs from images
+          return {
+            ...data,
+            id: d.id,
+            images: (data.images ?? []).filter(
+              (img) => img.url && !img.url.startsWith("blob:")
+            ),
+          };
+        });
+        // Sort newest first
+        products.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        set({ products, _hasHydrated: true });
+      },
+      (error) => {
+        console.error("[productStore] Firestore listener error:", error);
+        // Fall back to defaults so the store isn't empty
+        set({ products: defaultProducts, _hasHydrated: true });
+      }
+    );
+  },
+
+  addProduct: async (data) => {
     const now = new Date().toISOString();
     const newProduct: Product = {
       ...data,
@@ -192,24 +264,53 @@ export const useProductStore = create<ProductStore>()(
       createdAt: now,
       updatedAt: now,
     };
+    // Optimistic update
     set({ products: [newProduct, ...get().products] });
+    try {
+      await setDoc(doc(db, PRODUCTS_COLLECTION, newProduct.id), newProduct);
+    } catch (error) {
+      console.error("[productStore] Failed to add product:", error);
+    }
   },
 
-  updateProduct: (id, data) => {
+  updateProduct: async (id, data) => {
+    const updated = {
+      ...data,
+      slug: data.name ? slugify(data.name) : undefined,
+      updatedAt: new Date().toISOString(),
+    };
+    // Remove undefined values
+    const cleanUpdate = Object.fromEntries(
+      Object.entries(updated).filter(([, v]) => v !== undefined)
+    );
+
+    // Optimistic update
     set({
       products: get().products.map((p) =>
         p.id === id
-          ? { ...p, ...data, slug: data.name ? slugify(data.name) : p.slug, updatedAt: new Date().toISOString() }
+          ? { ...p, ...cleanUpdate }
           : p
       ),
     });
+
+    try {
+      await updateDoc(doc(db, PRODUCTS_COLLECTION, id), cleanUpdate);
+    } catch (error) {
+      console.error("[productStore] Failed to update product:", error);
+    }
   },
 
-  deleteProduct: (id) => {
+  deleteProduct: async (id) => {
+    // Optimistic update
     set({ products: get().products.filter((p) => p.id !== id) });
+    try {
+      await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+    } catch (error) {
+      console.error("[productStore] Failed to delete product:", error);
+    }
   },
 
-  duplicateProduct: (id) => {
+  duplicateProduct: async (id) => {
     const original = get().products.find((p) => p.id === id);
     if (!original) return;
     const now = new Date().toISOString();
@@ -226,22 +327,20 @@ export const useProductStore = create<ProductStore>()(
       createdAt: now,
       updatedAt: now,
     };
+    // Optimistic update
     set({ products: [newProduct, ...get().products] });
+    try {
+      await setDoc(doc(db, PRODUCTS_COLLECTION, newProduct.id), newProduct);
+    } catch (error) {
+      console.error("[productStore] Failed to duplicate product:", error);
+    }
   },
 
   getProduct: (id) => get().products.find((p) => p.id === id),
-}),
-    {
-      name: "zozagateway-products",
-      onRehydrateStorage: () => (state) => {
-        // Clean up any invalid blob: URLs from images saved before the base64 fix
-        if (state) {
-          state.products = state.products.map((p) => ({
-            ...p,
-            images: p.images.filter((img) => img.url && !img.url.startsWith("blob:")),
-          }));
-        }
-      },
-    }
-  )
-);
+}));
+
+/* ── Auto-start listener in the browser ──────────────────────────────── */
+
+if (typeof window !== "undefined") {
+  useProductStore.getState()._initListener();
+}

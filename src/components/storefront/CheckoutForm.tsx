@@ -208,8 +208,8 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
         updatedAt: now,
       };
 
-      // Save to order store (persisted in localStorage)
-      addOrder(order);
+      // Save to order store (synced to Firestore)
+      await addOrder(order);
 
       clearCart();
       window.dispatchEvent(

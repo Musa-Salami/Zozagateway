@@ -80,6 +80,7 @@ export default function ProductsPage() {
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [deleteDialog, setDeleteDialog] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const hasHydrated = useProductStore((s) => s._hasHydrated);
   const products = useProductStore((s) => s.products);
   const storeDeleteProduct = useProductStore((s) => s.deleteProduct);
   const storeUpdateProduct = useProductStore((s) => s.updateProduct);
@@ -187,6 +188,14 @@ export default function ProductsPage() {
     toast.success("Product updated!");
     setEditingProduct(null);
   };
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <motion.div

@@ -22,6 +22,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { contactSchema, type ContactInput } from "@/lib/validators";
 import { SITE_NAME } from "@/lib/constants";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const contactInfo = [
   {
@@ -84,12 +86,18 @@ export default function ContactPage() {
   });
 
   const onSubmit = async (data: ContactInput) => {
-    // In production, this would call an API endpoint
-    console.log("Contact form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setSubmitted(true);
-    reset();
-    setTimeout(() => setSubmitted(false), 5000);
+    try {
+      await addDoc(collection(db, "contactMessages"), {
+        ...data,
+        createdAt: serverTimestamp(),
+        read: false,
+      });
+      setSubmitted(true);
+      reset();
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    }
   };
 
   return (

@@ -85,6 +85,7 @@ export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
 
+  const hasHydrated = useProductStore((s) => s._hasHydrated);
   const products = useProductStore((s) => s.products);
   const product = useMemo(
     () => products.find((p) => p.slug === slug),
@@ -109,6 +110,14 @@ export default function ProductDetailPage() {
   const [addedToCart, setAddedToCart] = useState(false);
 
   const addItem = useCartStore((state) => state.addItem);
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!product) {
     return (

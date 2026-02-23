@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -19,42 +19,9 @@ import { CategoryPieChart } from "@/components/admin/CategoryPieChart";
 import { Button } from "@/components/ui/button";
 import { useOrderStore } from "@/stores/orderStore";
 import { useProductStore } from "@/stores/productStore";
+import { useCategoryStore } from "@/stores/categoryStore";
 import { formatPrice } from "@/lib/formatters";
 import type { Order, SalesData, TopProduct } from "@/types";
-
-// ── Chart Placeholder Data ──────────────────────────────────────────────────
-
-const revenueData: SalesData[] = Array.from({ length: 30 }, (_, i) => {
-  const date = new Date();
-  date.setDate(date.getDate() - (29 - i));
-  return {
-    date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-    revenue: Math.floor(Math.random() * 800 + 400),
-    orders: Math.floor(Math.random() * 30 + 10),
-  };
-});
-
-const topProducts: TopProduct[] = [
-  { name: "Spicy Plantain Chips", revenue: 1840, quantity: 230 },
-  { name: "Coconut Cookies", revenue: 1560, quantity: 195 },
-  { name: "Chin Chin Original", revenue: 1320, quantity: 165 },
-  { name: "Puff Puff Mix", revenue: 1100, quantity: 138 },
-  { name: "Garlic Roasted Nuts", revenue: 980, quantity: 122 },
-  { name: "Honey Cashew Brittle", revenue: 850, quantity: 106 },
-  { name: "Ginger Snap Biscuits", revenue: 720, quantity: 90 },
-  { name: "Tropical Trail Mix", revenue: 640, quantity: 80 },
-];
-
-const categoryData = [
-  { name: "Chips & Crisps", value: 3200 },
-  { name: "Cookies & Biscuits", value: 2800 },
-  { name: "Pastries & Pies", value: 2400 },
-  { name: "Nuts & Trail Mix", value: 1900 },
-  { name: "Candy & Sweets", value: 1600 },
-  { name: "Popcorn", value: 1200 },
-  { name: "Healthy Snacks", value: 900 },
-  { name: "Beverages", value: 750 },
-];
 
 // ── Page Component ──────────────────────────────────────────────────────────
 
@@ -72,11 +39,14 @@ const item = {
 };
 
 export default function AdminDashboardPage() {
-  const hasHydrated = useOrderStore((state) => state._hasHydrated);
+  const ordersHydrated = useOrderStore((state) => state._hasHydrated);
+  const productsHydrated = useProductStore((state) => state._hasHydrated);
+  const hasHydrated = ordersHydrated && productsHydrated;
   const orders = useOrderStore((state) => state.orders);
   const products = useProductStore((state) => state.products);
+  const categories = useCategoryStore((state) => state.categories);
 
-  // Compute real stats from orders
+  // ── Compute real stats ────────────────────────────────────────
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -84,7 +54,73 @@ export default function AdminDashboardPage() {
     (o) => new Date(o.createdAt) >= startOfToday
   ).length;
   const pendingOrders = orders.filter((o) => o.status === "PENDING").length;
-  const recentOrders = orders.slice(0, 10); // most recent 10
+  const recentOrders = [...orders]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 10);
+
+  // ── Revenue chart: daily revenue for last 30 days ─────────────
+  const revenueData = useMemo(() => {
+    const days = 30;
+    const result: SalesData[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dayStr = d.toISOString().slice(0, 10);
+      const dayLabel = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const dayOrders = orders.filter((o) => o.createdAt.slice(0, 10) === dayStr);
+      result.push({
+        date: dayLabel,
+        revenue: dayOrders.reduce((s, o) => s + o.total, 0),
+        orders: dayOrders.length,
+      });
+    }
+    return result;
+  }, [orders]);
+
+  // ── Top products by revenue from order items ──────────────────
+  const topProducts = useMemo(() => {
+    const map = new Map<string, { name: string; revenue: number; quantity: number }>();
+    for (const order of orders) {
+      for (const item of order.items) {
+        const name = item.product?.name ?? item.productId;
+        const existing = map.get(name);
+        if (existing) {
+          existing.revenue += item.totalPrice;
+          existing.quantity += item.quantity;
+        } else {
+          map.set(name, { name, revenue: item.totalPrice, quantity: item.quantity });
+        }
+      }
+    }
+    return Array.from(map.values())
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 8);
+  }, [orders]);
+
+  // ── Category pie chart: revenue per category ──────────────────
+  const categoryData = useMemo(() => {
+    const catMap = new Map<string, number>();
+    for (const order of orders) {
+      for (const item of order.items) {
+        const catId = item.product?.categoryId ?? "uncategorized";
+        catMap.set(catId, (catMap.get(catId) ?? 0) + item.totalPrice);
+      }
+    }
+    return Array.from(catMap.entries())
+      .map(([catId, value]) => {
+        const cat = categories.find((c) => c.id === catId);
+        return { name: cat?.name ?? "Other", value };
+      })
+      .sort((a, b) => b.value - a.value);
+  }, [orders, categories]);
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <motion.div

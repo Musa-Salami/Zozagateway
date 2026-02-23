@@ -47,6 +47,7 @@ const sectionVariants = {
 };
 
 export default function HomePage() {
+  const hasHydrated = useProductStore((s) => s._hasHydrated);
   const products = useProductStore((s) => s.products);
 
   const featuredProducts = useMemo(
@@ -66,6 +67,14 @@ export default function HomePage() {
       })),
     [products]
   );
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <>

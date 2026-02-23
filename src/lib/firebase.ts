@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJ32tDvLY7QqBB9CHtPOeElXyTtdNhUuk",
@@ -14,6 +15,9 @@ const firebaseConfig = {
 // Initialize Firebase (avoid duplicate initialization)
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
+// Firestore database
+const db = getFirestore(app);
+
 // Initialize Analytics only in the browser
 let analytics: ReturnType<typeof getAnalytics> | null = null;
 if (typeof window !== "undefined") {
@@ -24,4 +28,4 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, analytics };
+export { app, db, analytics };
