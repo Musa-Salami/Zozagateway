@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -22,34 +21,7 @@ import {
 } from "@/components/ui/table";
 import { formatPrice, formatDate } from "@/lib/formatters";
 import { getInitials } from "@/lib/utils";
-
-// ── Demo Data ──────────────────────────────────────────────────────────────
-
-interface Customer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar?: string | null;
-  ordersCount: number;
-  totalSpent: number;
-  joinedAt: string;
-}
-
-const demoCustomers: Customer[] = [
-  { id: "u1", name: "John Adeyemi", email: "john@example.com", phone: "+2348012345678", avatar: null, ordersCount: 12, totalSpent: 342.5, joinedAt: "2025-06-15T10:00:00Z" },
-  { id: "u2", name: "Amina Bello", email: "amina@example.com", phone: "+2348023456789", avatar: null, ordersCount: 8, totalSpent: 256.0, joinedAt: "2025-07-20T08:00:00Z" },
-  { id: "u3", name: "Chidi Okonkwo", email: "chidi@example.com", phone: "+2348034567890", avatar: null, ordersCount: 15, totalSpent: 487.25, joinedAt: "2025-05-10T14:00:00Z" },
-  { id: "u4", name: "Fatima Hassan", email: "fatima@example.com", phone: "+2348045678901", avatar: null, ordersCount: 6, totalSpent: 178.0, joinedAt: "2025-08-05T12:00:00Z" },
-  { id: "u5", name: "Emeka Nwosu", email: "emeka@example.com", phone: "+2348056789012", avatar: null, ordersCount: 20, totalSpent: 612.75, joinedAt: "2025-04-01T09:00:00Z" },
-  { id: "u6", name: "Ngozi Eze", email: "ngozi@example.com", phone: "+2348067890123", avatar: null, ordersCount: 3, totalSpent: 89.5, joinedAt: "2025-10-12T16:00:00Z" },
-  { id: "u7", name: "Bola Akinwale", email: "bola@example.com", phone: "+2348078901234", avatar: null, ordersCount: 9, totalSpent: 295.0, joinedAt: "2025-07-01T11:00:00Z" },
-  { id: "u8", name: "Kemi Oluwole", email: "kemi@example.com", phone: "+2348089012345", avatar: null, ordersCount: 11, totalSpent: 380.25, joinedAt: "2025-06-20T07:00:00Z" },
-  { id: "u9", name: "Tunde Bakare", email: "tunde@example.com", phone: "+2348090123456", avatar: null, ordersCount: 7, totalSpent: 210.0, joinedAt: "2025-08-15T13:00:00Z" },
-  { id: "u10", name: "Zainab Musa", email: "zainab@example.com", phone: "+2348001234567", avatar: null, ordersCount: 14, totalSpent: 445.5, joinedAt: "2025-05-25T15:00:00Z" },
-  { id: "u11", name: "Ade Ogundimu", email: "ade@example.com", phone: "+2348011234567", avatar: null, ordersCount: 5, totalSpent: 155.0, joinedAt: "2025-09-10T10:00:00Z" },
-  { id: "u12", name: "Halima Yusuf", email: "halima@example.com", phone: "+2348021234567", avatar: null, ordersCount: 18, totalSpent: 520.75, joinedAt: "2025-04-20T08:00:00Z" },
-];
+import { useOrderStore, type Customer } from "@/stores/orderStore";
 
 // ── Page Component ──────────────────────────────────────────────────────────
 
@@ -57,10 +29,11 @@ type SortField = "name" | "ordersCount" | "totalSpent" | "joinedAt";
 type SortDir = "asc" | "desc";
 
 export default function CustomersPage() {
-  const router = useRouter();
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState<SortField>("joinedAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const getCustomers = useOrderStore((state) => state.getCustomers);
+  const customers = getCustomers();
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -82,7 +55,7 @@ export default function CustomersPage() {
   };
 
   const filtered = useMemo(() => {
-    let result = [...demoCustomers];
+    let result = [...customers];
 
     if (search) {
       const q = search.toLowerCase();
@@ -113,7 +86,23 @@ export default function CustomersPage() {
     });
 
     return result;
-  }, [search, sortField, sortDir]);
+  }, [customers, search, sortField, sortDir]);
+
+  if (customers.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center py-24 text-center"
+      >
+        <Users className="h-16 w-16 text-muted-foreground/40 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">No customers yet</h2>
+        <p className="text-muted-foreground max-w-sm">
+          Customer profiles are created automatically when orders are placed through the storefront.
+        </p>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -125,7 +114,7 @@ export default function CustomersPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Customers</h1>
         <p className="text-sm text-muted-foreground">
-          {demoCustomers.length} registered customers
+          {customers.length} registered customer{customers.length !== 1 ? "s" : ""}
         </p>
       </div>
 
@@ -196,8 +185,7 @@ export default function CustomersPage() {
               filtered.map((customer) => (
                 <TableRow
                   key={customer.id}
-                  className="cursor-pointer"
-                  onClick={() => router.push(`/admin/customers/${customer.id}`)}
+                  className="hover:bg-muted/50"
                 >
                   <TableCell>
                     <Avatar className="h-9 w-9">

@@ -29,11 +29,13 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useCartStore } from "@/stores/cartStore";
+import { useOrderStore } from "@/stores/orderStore";
 import { toast } from "sonner";
 import { formatPrice } from "@/lib/formatters";
 import { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { generateOrderNumber } from "@/lib/utils";
+import type { Order, OrderItem, PaymentStatus } from "@/types";
 
 // ── Payment method type ───────────────────────────────────────
 type PaymentMethod = "cash" | "transfer" | "card";
@@ -86,6 +88,7 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
   const items = useCartStore((state) => state.items);
   const getSubtotal = useCartStore((state) => state.getSubtotal);
   const clearCart = useCartStore((state) => state.clearCart);
+  const addOrder = useOrderStore((state) => state.addOrder);
 
   const subtotal = getSubtotal();
   const deliveryFee =
@@ -148,6 +151,67 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const orderNum = generateOrderNumber();
+      const orderId = `ord-${Date.now()}`;
+      const now = new Date().toISOString();
+
+      // Determine payment status based on method
+      const paymentStatus: PaymentStatus =
+        paymentMethod === "card" ? "PAID" : "PENDING";
+
+      // Build order items from cart
+      const orderItems: OrderItem[] = items.map((item, idx) => ({
+        id: `oi-${Date.now()}-${idx}`,
+        orderId,
+        productId: item.product.id,
+        product: item.product,
+        quantity: item.quantity,
+        unitPrice: item.product.price,
+        totalPrice: item.product.price * item.quantity,
+      }));
+
+      // Build the full order
+      const order: Order = {
+        id: orderId,
+        orderNumber: orderNum,
+        userId: `guest-${Date.now()}`,
+        user: {
+          id: `guest-${Date.now()}`,
+          email: "",
+          name: data.name,
+          phone: data.phone,
+          role: "CUSTOMER",
+          createdAt: now,
+        },
+        status: "PENDING",
+        subtotal,
+        deliveryFee,
+        discount: 0,
+        total,
+        paymentStatus,
+        deliveryType: data.deliveryType,
+        address: data.address ?? null,
+        city: data.city ?? null,
+        phone: data.phone,
+        notes: data.notes ?? null,
+        items: orderItems,
+        promoCode: data.promoCode ?? null,
+        timeline: [
+          {
+            id: `tl-${Date.now()}`,
+            orderId,
+            status: "PENDING",
+            note: `Order placed via ${paymentMethod === "cash" ? "Cash on Delivery" : paymentMethod === "transfer" ? "Bank Transfer" : "Card Payment"}`,
+            changedBy: null,
+            createdAt: now,
+          },
+        ],
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      // Save to order store (persisted in localStorage)
+      addOrder(order);
+
       clearCart();
       window.dispatchEvent(
         new CustomEvent("order-success", { detail: { orderNumber: orderNum } })

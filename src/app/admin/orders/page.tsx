@@ -9,6 +9,7 @@ import {
   Trash2,
   RefreshCw,
   CheckCircle,
+  Package,
 } from "lucide-react";
 import { OrdersTable } from "@/components/admin/OrdersTable";
 import { Button } from "@/components/ui/button";
@@ -27,73 +28,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useOrderStore } from "@/stores/orderStore";
 import type { Order, OrderStatus } from "@/types";
 
-// ── Demo Data ──────────────────────────────────────────────────────────────
+// ── Filter Tabs (dynamic from store) ─────────────────────────────────────
 
-const names = [
-  "John Adeyemi", "Amina Bello", "Chidi Okonkwo", "Fatima Hassan", "Emeka Nwosu",
-  "Ngozi Eze", "Bola Akinwale", "Kemi Oluwole", "Tunde Bakare", "Zainab Musa",
-  "Ade Ogundimu", "Halima Yusuf", "Ifeanyi Okoro", "Dayo Adeleke", "Sade Williams",
-  "Musa Ibrahim", "Grace Etim", "Yemi Ojo",
-];
-
-const statuses: OrderStatus[] = [
-  "PENDING", "CONFIRMED", "PREPARING", "READY", "DELIVERED", "PICKED_UP", "CANCELLED",
-];
-
-const demoOrders: Order[] = Array.from({ length: 18 }, (_, i) => {
-  const status = statuses[i % statuses.length];
-  const name = names[i % names.length];
-  const subtotal = Math.floor(Math.random() * 60 + 12);
-  const deliveryFee = subtotal >= 25 ? 0 : 3.99;
-  const discount = i % 4 === 0 ? Math.round(subtotal * 0.15 * 100) / 100 : 0;
-  const total = Math.round((subtotal + deliveryFee - discount) * 100) / 100;
-  const hoursAgo = i * 4 + Math.floor(Math.random() * 3);
-
-  return {
-    id: `ord-${String(i + 1).padStart(3, "0")}`,
-    orderNumber: `ZG-${String.fromCharCode(65 + i)}${Math.floor(Math.random() * 9)}${String.fromCharCode(66 + i)}${Math.floor(Math.random() * 9)}-${String.fromCharCode(67 + (i % 20))}${Math.floor(Math.random() * 9)}${String.fromCharCode(68 + (i % 20))}${Math.floor(Math.random() * 9)}`,
-    userId: `u${i + 1}`,
-    user: {
-      id: `u${i + 1}`,
-      email: `${name.split(" ")[0].toLowerCase()}@example.com`,
-      name,
-      phone: `+23480${String(Math.floor(Math.random() * 90000000 + 10000000))}`,
-      role: "CUSTOMER",
-      createdAt: "2025-12-01T10:00:00Z",
-    },
-    status,
-    subtotal,
-    deliveryFee,
-    discount,
-    total,
-    paymentStatus: status === "CANCELLED" ? "REFUNDED" : i % 5 === 0 ? "PENDING" : "PAID",
-    deliveryType: i % 3 === 0 ? "PICKUP" : "DELIVERY",
-    address: i % 3 !== 0 ? `${i + 1} Sample Street, Lagos` : undefined,
-    phone: `+23480${String(Math.floor(Math.random() * 90000000 + 10000000))}`,
-    items: Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, j) => ({
-      id: `oi-${i}-${j}`,
-      orderId: `ord-${String(i + 1).padStart(3, "0")}`,
-      productId: `p${j + 1}`,
-      quantity: Math.floor(Math.random() * 3) + 1,
-      unitPrice: Math.floor(Math.random() * 10) + 5,
-      totalPrice: (Math.floor(Math.random() * 3) + 1) * (Math.floor(Math.random() * 10) + 5),
-    })),
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * hoursAgo).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * hoursAgo).toISOString(),
-  };
-});
-
-// ── Filter Tabs ─────────────────────────────────────────────────────────────
-
-const filterTabs: { label: string; value: string; count: number }[] = [
-  { label: "All", value: "all", count: demoOrders.length },
-  { label: "Pending", value: "PENDING", count: demoOrders.filter((o) => o.status === "PENDING").length },
-  { label: "Preparing", value: "PREPARING", count: demoOrders.filter((o) => o.status === "PREPARING").length },
-  { label: "Ready", value: "READY", count: demoOrders.filter((o) => o.status === "READY").length },
-  { label: "Delivered", value: "DELIVERED", count: demoOrders.filter((o) => o.status === "DELIVERED").length },
-  { label: "Cancelled", value: "CANCELLED", count: demoOrders.filter((o) => o.status === "CANCELLED").length },
+const statusLabels: { label: string; value: string }[] = [
+  { label: "All", value: "all" },
+  { label: "Pending", value: "PENDING" },
+  { label: "Confirmed", value: "CONFIRMED" },
+  { label: "Preparing", value: "PREPARING" },
+  { label: "Ready", value: "READY" },
+  { label: "Delivered", value: "DELIVERED" },
+  { label: "Picked Up", value: "PICKED_UP" },
+  { label: "Cancelled", value: "CANCELLED" },
 ];
 
 // ── Page Component ──────────────────────────────────────────────────────────
@@ -101,11 +49,53 @@ const filterTabs: { label: string; value: string; count: number }[] = [
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [dateRange, setDateRange] = useState("7d");
+  const orders = useOrderStore((state) => state.orders);
+
+  // Build dynamic filter tabs with counts
+  const filterTabs = useMemo(() => {
+    return statusLabels.map((s) => ({
+      ...s,
+      count:
+        s.value === "all"
+          ? orders.length
+          : orders.filter((o) => o.status === s.value).length,
+    }));
+  }, [orders]);
 
   const filteredOrders = useMemo(() => {
-    if (activeTab === "all") return demoOrders;
-    return demoOrders.filter((o) => o.status === activeTab);
-  }, [activeTab]);
+    let result = activeTab === "all" ? orders : orders.filter((o) => o.status === activeTab);
+
+    // Date range filter
+    if (dateRange !== "all") {
+      const now = Date.now();
+      const msMap: Record<string, number> = {
+        today: 24 * 60 * 60 * 1000,
+        "7d": 7 * 24 * 60 * 60 * 1000,
+        "30d": 30 * 24 * 60 * 60 * 1000,
+        "90d": 90 * 24 * 60 * 60 * 1000,
+      };
+      const cutoff = now - (msMap[dateRange] ?? 7 * 24 * 60 * 60 * 1000);
+      result = result.filter((o) => new Date(o.createdAt).getTime() >= cutoff);
+    }
+
+    return result;
+  }, [activeTab, dateRange, orders]);
+
+  if (orders.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center py-24 text-center"
+      >
+        <Package className="h-16 w-16 text-muted-foreground/40 mb-4" />
+        <h2 className="text-xl font-semibold mb-2">No orders yet</h2>
+        <p className="text-muted-foreground max-w-sm">
+          When customers place orders through the storefront, they will appear here automatically.
+        </p>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -118,7 +108,7 @@ export default function OrdersPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Order Management</h1>
           <p className="text-sm text-muted-foreground">
-            {demoOrders.length} total orders
+            {orders.length} total orders
           </p>
         </div>
         <div className="flex items-center gap-2">
