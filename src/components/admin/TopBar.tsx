@@ -14,6 +14,7 @@ import {
 import { cn, getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAdminAuthStore } from "@/stores/adminAuthStore";
 import {
   Avatar,
   AvatarFallback,
@@ -45,9 +46,10 @@ export function TopBar({
   onMenuToggle,
   breadcrumbs = [],
   notificationCount = 0,
-  user = { name: "Admin User", email: "admin@zozagatewaysnacks.com" },
+  user = { name: "Admin User", email: "zozagatewaysnacks@gmail.com" },
 }: TopBarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const logout = useAdminAuthStore((s) => s.logout);
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-6">
@@ -172,7 +174,10 @@ export function TopBar({
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
+          <DropdownMenuItem
+            className="cursor-pointer text-red-600 focus:text-red-600"
+            onClick={() => logout()}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </DropdownMenuItem>
