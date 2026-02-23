@@ -22,6 +22,7 @@ export interface Customer {
 
 interface OrderStore {
   orders: Order[];
+  _hasHydrated: boolean;
 
   // ── Actions ──
   addOrder: (order: Order) => void;
@@ -55,6 +56,7 @@ export const useOrderStore = create<OrderStore>()(
   persist(
     (set, get) => ({
       orders: [],
+      _hasHydrated: false,
 
       /* ── Add a new order ───────────────────────────────────── */
       addOrder: (order: Order) => {
@@ -154,6 +156,10 @@ export const useOrderStore = create<OrderStore>()(
     }),
     {
       name: "zozagateway-orders",
+      partialize: (state) => ({ orders: state.orders }),
+      onRehydrateStorage: () => () => {
+        useOrderStore.setState({ _hasHydrated: true });
+      },
     }
   )
 );

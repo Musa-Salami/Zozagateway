@@ -72,6 +72,7 @@ const item = {
 };
 
 export default function AdminDashboardPage() {
+  const hasHydrated = useOrderStore((state) => state._hasHydrated);
   const orders = useOrderStore((state) => state.orders);
   const products = useProductStore((state) => state.products);
 

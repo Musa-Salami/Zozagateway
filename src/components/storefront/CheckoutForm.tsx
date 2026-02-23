@@ -158,12 +158,11 @@ export function CheckoutForm({ className }: CheckoutFormProps) {
       const paymentStatus: PaymentStatus =
         paymentMethod === "card" ? "PAID" : "PENDING";
 
-      // Build order items from cart
+      // Build order items from cart (exclude full product to keep localStorage small)
       const orderItems: OrderItem[] = items.map((item, idx) => ({
         id: `oi-${Date.now()}-${idx}`,
         orderId,
         productId: item.product.id,
-        product: item.product,
         quantity: item.quantity,
         unitPrice: item.product.price,
         totalPrice: item.product.price * item.quantity,

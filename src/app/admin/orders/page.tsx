@@ -49,6 +49,7 @@ const statusLabels: { label: string; value: string }[] = [
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [dateRange, setDateRange] = useState("7d");
+  const hasHydrated = useOrderStore((state) => state._hasHydrated);
   const orders = useOrderStore((state) => state.orders);
 
   // Build dynamic filter tabs with counts
@@ -80,6 +81,14 @@ export default function OrdersPage() {
 
     return result;
   }, [activeTab, dateRange, orders]);
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   if (orders.length === 0) {
     return (

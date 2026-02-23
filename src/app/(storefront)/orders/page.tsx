@@ -13,7 +13,16 @@ import { useOrderStore } from "@/stores/orderStore";
 import type { Order, OrderStatus } from "@/types";
 
 export default function OrdersPage() {
+  const hasHydrated = useOrderStore((state) => state._hasHydrated);
   const orders = useOrderStore((state) => state.orders);
+
+  if (!hasHydrated) {
+    return (
+      <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   if (orders.length === 0) {
     return (
