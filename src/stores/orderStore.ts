@@ -156,6 +156,7 @@ export const useOrderStore = create<OrderStore>()(
     }),
     {
       name: "zozagateway-orders",
+      version: 2,
       partialize: (state) => ({ orders: state.orders }),
       onRehydrateStorage: () => () => {
         useOrderStore.setState({ _hasHydrated: true });
