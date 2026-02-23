@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import {
   Plus,
   Search,
@@ -17,6 +17,7 @@ import {
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
   Table,
   TableBody,
   TableCell,
@@ -52,10 +59,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ProductForm } from "@/components/admin/ProductForm";
 import { formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import { useProductStore, CATEGORIES } from "@/stores/productStore";
-import type { Product } from "@/types";
+import type { Product, ProductImage } from "@/types";
 
 // ── Page Component ──────────────────────────────────────────────────────────
 
@@ -64,7 +72,6 @@ type SortField = "name" | "price" | "stock" | "createdAt";
 type SortDir = "asc" | "desc";
 
 export default function ProductsPage() {
-  const router = useRouter();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -72,9 +79,11 @@ export default function ProductsPage() {
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [deleteDialog, setDeleteDialog] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const products = useProductStore((s) => s.products);
   const storeDeleteProduct = useProductStore((s) => s.deleteProduct);
   const storeUpdateProduct = useProductStore((s) => s.updateProduct);
+  const storeDuplicateProduct = useProductStore((s) => s.duplicateProduct);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -150,6 +159,33 @@ export default function ProductsPage() {
     if (product) {
       storeUpdateProduct(id, { stock: Math.max(0, product.stock + delta) });
     }
+  };
+
+  const handleDuplicate = (id: string) => {
+    storeDuplicateProduct(id);
+    toast.success("Product duplicated!");
+  };
+
+  const handleEditSubmit = (data: Record<string, unknown>, images: ProductImage[]) => {
+    if (!editingProduct) return;
+    const category = CATEGORIES.find((c) => c.id === data.categoryId);
+    storeUpdateProduct(editingProduct.id, {
+      name: data.name as string,
+      description: (data.description as string) || "",
+      price: Number(data.price) || 0,
+      comparePrice: data.comparePrice ? Number(data.comparePrice) : undefined,
+      categoryId: (data.categoryId as string) || "",
+      category: category || editingProduct.category,
+      stock: Number(data.stock) || 0,
+      sku: (data.sku as string) || undefined,
+      tags: (data.tags as string[]) || [],
+      dietary: (data.dietary as string[]) || [],
+      published: Boolean(data.published),
+      featured: Boolean(data.featured),
+      images: images || [],
+    });
+    toast.success("Product updated!");
+    setEditingProduct(null);
   };
 
   return (
@@ -316,10 +352,10 @@ export default function ProductsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => router.push(`/admin/products/${product.id}/edit`)}>
+                        <DropdownMenuItem onClick={() => setEditingProduct(product)}>
                           <Pencil className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicate(product.id)}>
                           <Copy className="mr-2 h-4 w-4" /> Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -370,7 +406,7 @@ export default function ProductsPage() {
                 </TableHeader>
                 <TableBody>
                   {filtered.map((product) => (
-                    <TableRow key={product.id} className="cursor-pointer" onClick={() => router.push(`/admin/products/${product.id}/edit`)}>
+                    <TableRow key={product.id} className="cursor-pointer" onClick={() => setEditingProduct(product)}>
                       <TableCell>
                         <div className="h-10 w-10 overflow-hidden rounded-lg bg-muted">
                           <img
@@ -413,10 +449,10 @@ export default function ProductsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/admin/products/${product.id}/edit`); }}>
+                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setEditingProduct(product); }}>
                               <Pencil className="mr-2 h-4 w-4" /> Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicate(product.id); }}>
                               <Copy className="mr-2 h-4 w-4" /> Duplicate
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -472,6 +508,30 @@ export default function ProductsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Product Sheet */}
+      <Sheet open={!!editingProduct} onOpenChange={(open) => { if (!open) setEditingProduct(null); }}>
+        <SheetContent side="right" className="w-full sm:w-[600px] sm:max-w-[600px] overflow-y-auto p-0">
+          <SheetHeader className="px-6 pt-6 pb-2">
+            <div className="flex items-center justify-between">
+              <SheetTitle>Edit Product</SheetTitle>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditingProduct(null)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </SheetHeader>
+          <div className="px-6 pb-6">
+            {editingProduct && (
+              <ProductForm
+                initialData={editingProduct}
+                categories={CATEGORIES}
+                onSubmit={handleEditSubmit}
+                isLoading={false}
+              />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </motion.div>
   );
 }

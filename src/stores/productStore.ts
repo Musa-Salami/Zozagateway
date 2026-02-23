@@ -160,6 +160,7 @@ interface ProductStore {
   addProduct: (data: Omit<Product, "id" | "slug" | "createdAt" | "updatedAt" | "averageRating" | "reviewCount">) => void;
   updateProduct: (id: string, data: Partial<Product>) => void;
   deleteProduct: (id: string) => void;
+  duplicateProduct: (id: string) => void;
   getProduct: (id: string) => Product | undefined;
 }
 
@@ -203,6 +204,26 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
 
   deleteProduct: (id) => {
     set({ products: get().products.filter((p) => p.id !== id) });
+  },
+
+  duplicateProduct: (id) => {
+    const original = get().products.find((p) => p.id === id);
+    if (!original) return;
+    const now = new Date().toISOString();
+    const newProduct: Product = {
+      ...original,
+      id: `p-${Date.now()}`,
+      name: `${original.name} (Copy)`,
+      slug: slugify(`${original.name}-copy-${Date.now()}`),
+      sku: original.sku ? `${original.sku}-COPY` : undefined,
+      published: false,
+      featured: false,
+      averageRating: 0,
+      reviewCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
+    set({ products: [newProduct, ...get().products] });
   },
 
   getProduct: (id) => get().products.find((p) => p.id === id),
