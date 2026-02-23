@@ -152,12 +152,12 @@ export default function AboutPage() {
                 </p>
               </div>
             </div>
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
+            <div className="relative aspect-square lg:aspect-[4/5] rounded-2xl overflow-hidden bg-muted shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600"
-                alt="Zoza Gateway Snacks kitchen"
+                src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=600&h=750&fit=crop"
+                alt="Zoza Gateway Snacks – freshly made African snacks"
                 fill
-                className="object-cover"
+                className="object-cover object-center"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
