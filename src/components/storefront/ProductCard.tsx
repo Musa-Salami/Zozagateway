@@ -27,40 +27,41 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const hasDiscount =
     product.comparePrice != null && product.comparePrice > product.price;
 
+  const handleCardClick = () => {
+    openProduct(product);
+  };
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={cn("group", className)}
+      className={cn("group cursor-pointer", className)}
     >
-      <Card className="overflow-hidden border transition-shadow hover:shadow-lg">
+      <Card className="overflow-hidden border transition-shadow hover:shadow-lg" onClick={handleCardClick}>
         {/* Image */}
-        <button onClick={() => openProduct(product)} className="block w-full text-left">
-          <div className="relative aspect-square overflow-hidden bg-muted">
-            <Image
-              src={primaryImage}
-              alt={product.name}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
-            {hasDiscount && (
-              <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white">
-                {Math.round(
-                  ((product.comparePrice! - product.price) /
-                    product.comparePrice!) *
-                    100
-                )}
-                % OFF
-              </Badge>
-            )}
-            {product.featured && (
-              <Badge className="absolute top-3 right-3 bg-brand-500 hover:bg-brand-600 text-white">
-                Featured
-              </Badge>
-            )}
-          </div>
-        </button>
+        <div className="relative aspect-square overflow-hidden bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={primaryImage}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+          {hasDiscount && (
+            <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600 text-white">
+              {Math.round(
+                ((product.comparePrice! - product.price) /
+                  product.comparePrice!) *
+                  100
+              )}
+              % OFF
+            </Badge>
+          )}
+          {product.featured && (
+            <Badge className="absolute top-3 right-3 bg-brand-500 hover:bg-brand-600 text-white">
+              Featured
+            </Badge>
+          )}
+        </div>
 
         <CardContent className="p-4 space-y-2">
           {/* Category */}
@@ -71,11 +72,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
           )}
 
           {/* Name */}
-          <button onClick={() => openProduct(product)} className="text-left">
-            <h3 className="font-semibold text-sm line-clamp-2 hover:text-brand-500 transition-colors">
-              {product.name}
-            </h3>
-          </button>
+          <h3 className="font-semibold text-sm line-clamp-2 hover:text-brand-500 transition-colors">
+            {product.name}
+          </h3>
 
           {/* Rating */}
           {product.averageRating != null && (
@@ -101,7 +100,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
             <Button
               size="sm"
-              onClick={() => addItem(product)}
+              onClick={(e) => { e.stopPropagation(); addItem(product); }}
               className="bg-brand-500 hover:bg-brand-600 text-white"
               aria-label={`Add ${product.name} to cart`}
             >

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useState, useMemo, useCallback } from "react";
-import Image from "next/image";
 import {
   Minus,
   Plus,
@@ -102,15 +101,14 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                 <div className="p-6 bg-muted/30">
                   {/* Main Image */}
                   <div className="relative aspect-square overflow-hidden rounded-xl bg-muted mb-3">
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={
                         product.images[selectedImage]?.url ??
                         "/images/placeholder-product.png"
                       }
                       alt={product.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="h-full w-full object-cover"
                     />
                     {hasDiscount && (
                       <Badge className="absolute top-3 left-3 bg-red-500 text-white text-sm px-3 py-1">
@@ -138,12 +136,11 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                               : "border-transparent hover:border-muted-foreground/30"
                           )}
                         >
-                          <Image
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={img.url}
                             alt={`${product.name} ${idx + 1}`}
-                            fill
-                            className="object-cover"
-                            sizes="64px"
+                            className="h-full w-full object-cover"
                           />
                         </button>
                       ))}
@@ -347,12 +344,11 @@ export function ProductViewProvider({ children }: { children: React.ReactNode })
                               className="flex items-center gap-2 rounded-lg border p-2 hover:bg-muted/50 transition-colors text-left"
                             >
                               <div className="relative h-10 w-10 overflow-hidden rounded-md bg-muted flex-shrink-0">
-                                <Image
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
                                   src={rp.images?.[0]?.url ?? "/images/placeholder-product.png"}
                                   alt={rp.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="40px"
+                                  className="h-full w-full object-cover"
                                 />
                               </div>
                               <div className="min-w-0">
