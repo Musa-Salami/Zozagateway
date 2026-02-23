@@ -11,6 +11,10 @@ import {
   X,
   User,
   Settings,
+  Home,
+  UtensilsCrossed,
+  Info,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +30,13 @@ import { SearchBar } from "@/components/storefront/SearchBar";
 import { useCartStore } from "@/stores/cartStore";
 import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+
+const NAV_ICONS: Record<string, React.ElementType> = {
+  "/": Home,
+  "/menu": UtensilsCrossed,
+  "/about": Info,
+  "/contact": MessageCircle,
+};
 
 export function Header() {
   const pathname = usePathname();
@@ -44,29 +55,40 @@ export function Header() {
         {/* Logo */}
         <Logo size="md" />
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "relative px-4 py-2 text-sm font-medium transition-colors rounded-md hover:text-brand-500",
-                pathname === link.href
-                  ? "text-brand-500"
-                  : "text-muted-foreground"
-              )}
-            >
-              {link.label}
-              {pathname === link.href && (
-                <motion.div
-                  layoutId="activeNav"
-                  className="absolute inset-x-1 -bottom-[calc(0.5rem+1px)] h-0.5 bg-brand-500 rounded-full"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-            </Link>
-          ))}
+        {/* Desktop Navigation – Tab Style */}
+        <nav className="hidden md:flex items-center gap-1 bg-muted/50 rounded-full px-1.5 py-1">
+          {NAV_LINKS.map((link) => {
+            const Icon = NAV_ICONS[link.href];
+            const isActive =
+              link.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(link.href);
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "relative flex items-center gap-1.5 px-4 py-2 text-sm font-medium transition-all rounded-full",
+                  isActive
+                    ? "text-brand-500"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeDesktopTab"
+                    className="absolute inset-0 bg-background shadow-sm rounded-full"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span className="relative flex items-center gap-1.5">
+                  {Icon && <Icon className="h-4 w-4" />}
+                  {link.label}
+                </span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right Actions */}
