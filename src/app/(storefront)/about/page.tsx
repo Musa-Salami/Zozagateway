@@ -44,9 +44,9 @@ const values = [
 
 const teamMembers = [
   {
-    name: "Zara Okonkwo",
+    name: "Zuleihat O. Abdullahi",
     role: "Founder & CEO",
-    bio: "Passionate foodie who started Zoza Gateway Snacks from her home kitchen. Zara brings 10+ years of culinary expertise.",
+    bio: "Passionate foodie who started Zoza Gateway Snacks from her home kitchen. Zuleihat brings years of culinary expertise and dedication to quality.",
     avatar: "/images/ceo.jpg",
   },
   {
@@ -133,7 +133,7 @@ export default function AboutPage() {
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
                   {SITE_NAME} started in 2022 as a small home kitchen operation, born
-                  from founder Zara Okonkwo&apos;s passion for creating delicious,
+                  from founder Zuleihat O. Abdullahi&apos;s passion for creating delicious,
                   handcrafted snacks. What began as weekend batches of cookies and chips
                   for friends and family quickly grew into something much bigger.
                 </p>
@@ -245,12 +245,12 @@ export default function AboutPage() {
             {teamMembers.map((member) => (
               <motion.div key={member.name} variants={staggerItem}>
                 <Card className="overflow-hidden text-center transition-shadow hover:shadow-lg">
-                  <div className="relative h-48 w-full bg-muted">
+                  <div className="relative h-56 w-full bg-muted">
                     <Image
                       src={member.avatar}
                       alt={member.name}
                       fill
-                      className="object-cover"
+                      className="object-cover object-top"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
                   </div>
