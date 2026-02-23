@@ -29,20 +29,20 @@ const contactInfo = [
   {
     icon: Phone,
     title: "Phone",
-    details: "+1 (555) 123-4567",
-    subtext: "Mon-Fri, 9am-6pm EST",
+    details: "+2349039412203",
+    subtext: "Mon-Fri, 9am-6pm WAT",
   },
   {
     icon: Mail,
     title: "Email",
-    details: "hello@zozagatewaysnacks.com",
+    details: "zozogatewaysnacks@gmail.com",
     subtext: "We reply within 24 hours",
   },
   {
     icon: MapPin,
     title: "Address",
-    details: "123 Snack Street",
-    subtext: "Food City, FC 12345",
+    details: "No. 85 Eika Adagu New Layout",
+    subtext: "Okehi, Kogi State",
   },
   {
     icon: Clock,
