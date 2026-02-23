@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/shared/StarRating";
 import { useCartStore } from "@/stores/cartStore";
+import { useProductView } from "@/components/storefront/ProductViewProvider";
 import { formatPrice } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types";
@@ -20,6 +20,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const { openProduct } = useProductView();
 
   const primaryImage =
     product.images?.[0]?.url || "/images/placeholder-product.png";
@@ -34,7 +35,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     >
       <Card className="overflow-hidden border transition-shadow hover:shadow-lg">
         {/* Image */}
-        <Link href={`/product/${product.slug}`} className="block">
+        <button onClick={() => openProduct(product)} className="block w-full text-left">
           <div className="relative aspect-square overflow-hidden bg-muted">
             <Image
               src={primaryImage}
@@ -59,7 +60,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               </Badge>
             )}
           </div>
-        </Link>
+        </button>
 
         <CardContent className="p-4 space-y-2">
           {/* Category */}
@@ -70,11 +71,11 @@ export function ProductCard({ product, className }: ProductCardProps) {
           )}
 
           {/* Name */}
-          <Link href={`/product/${product.slug}`}>
+          <button onClick={() => openProduct(product)} className="text-left">
             <h3 className="font-semibold text-sm line-clamp-2 hover:text-brand-500 transition-colors">
               {product.name}
             </h3>
-          </Link>
+          </button>
 
           {/* Rating */}
           {product.averageRating != null && (
