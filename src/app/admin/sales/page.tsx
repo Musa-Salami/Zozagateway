@@ -15,7 +15,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RevenueChart } from "@/components/admin/RevenueChart";
 import { TopProductsChart } from "@/components/admin/TopProductsChart";
 import { CategoryPieChart } from "@/components/admin/CategoryPieChart";
-import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
 import { cn } from "@/lib/utils";
 import { formatPrice, formatNumber, formatPercentage } from "@/lib/formatters";
 import { useOrderStore } from "@/stores/orderStore";
@@ -135,7 +134,11 @@ export default function SalesPage() {
     return "bg-brand-500/80";
   };
 
-  if (!hasHydrated) return <LoadingSkeleton />;
+  if (!hasHydrated) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+    </div>
+  );
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

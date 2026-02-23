@@ -70,7 +70,7 @@ export default function OrdersPage() {
                         {formatDate(order.createdAt)}
                       </span>
                       <span>
-                        {order.items.length} item{order.items.length !== 1 ? "s" : ""}
+                        {(order.items ?? []).length} item{(order.items ?? []).length !== 1 ? "s" : ""}
                       </span>
                       <span className="font-semibold text-foreground">
                         {formatPrice(order.total)}

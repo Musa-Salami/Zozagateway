@@ -13,7 +13,6 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LoadingSkeleton } from "@/components/shared/LoadingSkeleton";
 import { useSettingsStore, type StoreSettings } from "@/stores/settingsStore";
 
 export default function SettingsPage() {
@@ -44,7 +43,11 @@ export default function SettingsPage() {
     }
   };
 
-  if (!hasHydrated) return <LoadingSkeleton />;
+  if (!hasHydrated) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+    </div>
+  );
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">

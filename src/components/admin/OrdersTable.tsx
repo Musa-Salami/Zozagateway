@@ -248,7 +248,7 @@ export function OrdersTable({
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {order.items.length}
+                    {(order.items ?? []).length}
                   </TableCell>
                   <TableCell className="font-medium">
                     {formatPrice(order.total)}
@@ -260,10 +260,10 @@ export function OrdersTable({
                     <span
                       className={cn(
                         "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium",
-                        PAYMENT_STATUSES[order.paymentStatus].color
+                        PAYMENT_STATUSES[order.paymentStatus]?.color
                       )}
                     >
-                      {PAYMENT_STATUSES[order.paymentStatus].label}
+                      {PAYMENT_STATUSES[order.paymentStatus]?.label ?? order.paymentStatus}
                     </span>
                   </TableCell>
                   <TableCell className="hidden text-muted-foreground sm:table-cell">

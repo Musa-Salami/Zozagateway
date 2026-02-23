@@ -229,10 +229,12 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
       (snapshot) => {
         const products = snapshot.docs.map((d) => {
           const data = d.data() as Product;
-          // Clean up any invalid blob: URLs from images
+          // Clean up any invalid blob: URLs from images and ensure arrays exist
           return {
             ...data,
             id: d.id,
+            tags: data.tags ?? [],
+            dietary: data.dietary ?? [],
             images: (data.images ?? []).filter(
               (img) => img.url && !img.url.startsWith("blob:")
             ),

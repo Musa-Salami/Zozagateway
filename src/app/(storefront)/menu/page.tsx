@@ -158,14 +158,6 @@ export default function MenuPage() {
   const [sortBy, setSortBy] = useState<SortOption>("popular");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  if (!hasHydrated) {
-    return (
-      <div className="flex items-center justify-center py-24">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
-      </div>
-    );
-  }
-
   const toggleCategory = (cat: string) => {
     setSelectedCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
@@ -263,6 +255,14 @@ export default function MenuPage() {
     sortBy,
     setSortBy,
   };
+
+  if (!hasHydrated) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

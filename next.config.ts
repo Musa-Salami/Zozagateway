@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const nextConfig: NextConfig = {
-  output: "export",
+  // Static export only during production build; dev server needs dynamic routing
+  ...(isProd ? { output: "export" as const } : {}),
   images: {
     unoptimized: true,
     remotePatterns: [

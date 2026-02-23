@@ -82,7 +82,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                     {order.user?.name ?? "Guest"}
                   </TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">
-                    {order.items.length}
+                    {(order.items ?? []).length}
                   </TableCell>
                   <TableCell className="font-medium">
                     {formatPrice(order.total)}

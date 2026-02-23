@@ -198,13 +198,13 @@ export default function OrderDetailPage({ params }: OrderPageProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {order.items.length === 0 ? (
+              {(order.items ?? []).length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-4">
                   No items in this order.
                 </p>
               ) : (
                 <div className="divide-y">
-                  {order.items.map((item) => {
+                  {(order.items ?? []).map((item) => {
                     const imgUrl = item.product?.images?.[0]?.url ?? "/images/placeholder-product.png";
                     return (
                       <div key={item.id} className="flex items-center gap-4 py-4">

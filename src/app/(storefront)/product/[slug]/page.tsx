@@ -1,6 +1,8 @@
 import ClientPage from "./ClientPage";
 
-export const dynamic = "force-dynamic";
+export function generateStaticParams() {
+  return [{ slug: "_" }];
+}
 
 export default function Page() {
   return <ClientPage />;
