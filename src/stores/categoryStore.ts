@@ -86,25 +86,27 @@ export const useCategoryStore = create<CategoryStore>()((set, get) => ({
     if (_listenerInitialized) return;
     _listenerInitialized = true;
 
-    // Seed defaults first (no-op if collection already has docs)
-    seedDefaultCategories();
-
-    onSnapshot(
-      collection(db, CATEGORIES_COLLECTION),
-      (snapshot) => {
-        const categories = snapshot.docs.map((d) => ({
-          ...d.data(),
-          id: d.id,
-        })) as Category[];
-        // Sort by sortOrder
-        categories.sort((a, b) => a.sortOrder - b.sortOrder);
-        set({ categories, _hasHydrated: true });
-      },
-      (error) => {
-        console.error("[categoryStore] Firestore listener error:", error);
-        set({ categories: defaultCategories, _hasHydrated: true });
-      }
-    );
+    // Seed defaults first, then start real-time listener.
+    seedDefaultCategories().then(() => {
+      onSnapshot(
+        collection(db, CATEGORIES_COLLECTION),
+        (snapshot) => {
+          const categories = snapshot.docs.map((d) => ({
+            ...d.data(),
+            id: d.id,
+          })) as Category[];
+          // Sort by sortOrder
+          categories.sort((a, b) => a.sortOrder - b.sortOrder);
+          set({ categories, _hasHydrated: true });
+        },
+        (error) => {
+          console.error("[categoryStore] Firestore listener error:", error);
+          // Don't fall back to hardcoded data — Firestore offline cache
+          // will serve the last-known data. Just mark as hydrated.
+          set({ _hasHydrated: true });
+        }
+      );
+    });
   },
 
   addCategory: async (data) => {

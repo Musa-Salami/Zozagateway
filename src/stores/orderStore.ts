@@ -321,10 +321,9 @@ export const useOrderStore = create<OrderStore>()((set, get) => ({
     if (_listenerInitialized) return;
     _listenerInitialized = true;
 
-    // Seed demo orders first (no-op if collection already has docs)
-    seedDemoOrders();
-
-    onSnapshot(
+    // Seed demo orders first, then start real-time listener.
+    seedDemoOrders().then(() => {
+      onSnapshot(
       collection(db, ORDERS_COLLECTION),
       (snapshot) => {
         const orders = snapshot.docs.map((d) => {
@@ -344,10 +343,12 @@ export const useOrderStore = create<OrderStore>()((set, get) => ({
       },
       (error) => {
         console.error("[orderStore] Firestore listener error:", error);
-        // Still mark as hydrated so the UI doesn't spin forever
+        // Still mark as hydrated so the UI doesn't spin forever.
+        // Firestore offline cache will serve last-known data.
         set({ _hasHydrated: true });
       }
     );
+    });
   },
 
   /* ── Add a new order ───────────────────────────────────── */

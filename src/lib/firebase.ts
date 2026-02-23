@@ -1,6 +1,10 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJ32tDvLY7QqBB9CHtPOeElXyTtdNhUuk",
@@ -15,8 +19,14 @@ const firebaseConfig = {
 // Initialize Firebase (avoid duplicate initialization)
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Firestore database
-const db = getFirestore(app);
+// Firestore database with offline persistence enabled.
+// All devices cache Firestore data locally so they always show the same
+// products/orders/categories even when connectivity is flaky.
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+  }),
+});
 
 // Initialize Analytics only in the browser
 let analytics: ReturnType<typeof getAnalytics> | null = null;

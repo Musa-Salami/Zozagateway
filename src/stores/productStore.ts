@@ -221,38 +221,40 @@ export const useProductStore = create<ProductStore>()((set, get) => ({
     if (_listenerInitialized) return;
     _listenerInitialized = true;
 
-    // Seed defaults first (no-op if collection already has docs)
-    seedDefaultProducts();
-
-    onSnapshot(
-      collection(db, PRODUCTS_COLLECTION),
-      (snapshot) => {
-        const products = snapshot.docs.map((d) => {
-          const data = d.data() as Product;
-          // Clean up any invalid blob: URLs from images and ensure arrays exist
-          return {
-            ...data,
-            id: d.id,
-            tags: data.tags ?? [],
-            dietary: data.dietary ?? [],
-            images: (data.images ?? []).filter(
-              (img) => img.url && !img.url.startsWith("blob:")
-            ),
-          };
-        });
-        // Sort newest first
-        products.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        set({ products, _hasHydrated: true });
-      },
-      (error) => {
-        console.error("[productStore] Firestore listener error:", error);
-        // Fall back to defaults so the store isn't empty
-        set({ products: defaultProducts, _hasHydrated: true });
-      }
-    );
+    // Seed defaults first, then start real-time listener.
+    // Awaiting seed ensures listener doesn't fire on an empty collection.
+    seedDefaultProducts().then(() => {
+      onSnapshot(
+        collection(db, PRODUCTS_COLLECTION),
+        (snapshot) => {
+          const products = snapshot.docs.map((d) => {
+            const data = d.data() as Product;
+            // Clean up any invalid blob: URLs from images and ensure arrays exist
+            return {
+              ...data,
+              id: d.id,
+              tags: data.tags ?? [],
+              dietary: data.dietary ?? [],
+              images: (data.images ?? []).filter(
+                (img) => img.url && !img.url.startsWith("blob:")
+              ),
+            };
+          });
+          // Sort newest first
+          products.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          set({ products, _hasHydrated: true });
+        },
+        (error) => {
+          console.error("[productStore] Firestore listener error:", error);
+          // Don't fall back to hardcoded data — Firestore offline cache
+          // will serve the last-known data. Just mark as hydrated.
+          set({ _hasHydrated: true });
+        }
+      );
+    });
   },
 
   addProduct: async (data) => {
