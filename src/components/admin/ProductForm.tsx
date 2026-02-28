@@ -240,8 +240,6 @@ export function ProductForm({
                   <Input
                     id="stock"
                     type="number"
-                    min="0"
-                    step="1"
                     placeholder="0"
                     {...register("stock")}
                     className={cn(errors.stock && "border-red-500")}
@@ -301,11 +299,6 @@ export function ProductForm({
                     </label>
                   ))}
                 </div>
-                {(!dietary || dietary.length === 0) && (
-                  <p className="text-xs text-muted-foreground">
-                    No dietary info selected — this section won&apos;t show on the product page.
-                  </p>
-                )}
               </div>
             </CardContent>
           </Card>
