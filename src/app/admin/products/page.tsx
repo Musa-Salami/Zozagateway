@@ -536,6 +536,7 @@ export default function ProductsPage() {
                 categories={CATEGORIES}
                 onSubmit={handleEditSubmit}
                 isLoading={false}
+                onCancel={() => setEditingProduct(null)}
               />
             )}
           </div>

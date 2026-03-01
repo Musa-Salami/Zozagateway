@@ -36,6 +36,7 @@ interface ProductFormProps {
   categories: Category[];
   onSubmit: (data: ProductFormData, images: ProductImage[]) => void | Promise<void>;
   isLoading?: boolean;
+  onCancel?: () => void;
 }
 
 const DIETARY_OPTIONS = [
@@ -50,6 +51,7 @@ export function ProductForm({
   categories,
   onSubmit,
   isLoading = false,
+  onCancel,
 }: ProductFormProps) {
   const [images, setImages] = useState<ProductImage[]>(
     initialData?.images ?? []
@@ -386,7 +388,7 @@ export function ProductForm({
                   )}
                   {initialData ? "Update Product" : "Create Product"}
                 </Button>
-                <Button type="button" variant="outline" className="w-full">
+                <Button type="button" variant="outline" className="w-full" onClick={onCancel}>
                   Cancel
                 </Button>
               </div>

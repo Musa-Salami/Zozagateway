@@ -68,6 +68,7 @@ export default function NewProductPage() {
         categories={CATEGORIES}
         onSubmit={handleSubmit as any}
         isLoading={isLoading}
+        onCancel={() => router.push("/admin/products")}
       />
     </motion.div>
   );

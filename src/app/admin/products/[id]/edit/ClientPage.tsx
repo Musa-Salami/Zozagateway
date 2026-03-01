@@ -106,6 +106,7 @@ export default function EditProductPage() {
         categories={CATEGORIES}
         onSubmit={handleSubmit as any}
         isLoading={isLoading}
+        onCancel={() => router.push("/admin/products")}
       />
 
       {/* Danger Zone */}
