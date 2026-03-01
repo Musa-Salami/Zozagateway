@@ -151,7 +151,7 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
             <span className="mx-1">•</span>
-            <Link href="/admin" className="hover:text-brand-500">Admin</Link>
+            <Link href="/admin" className="hover:text-brand-500">Admin Login</Link>
           </p>
           <div className="flex items-center gap-4">
             <Link
