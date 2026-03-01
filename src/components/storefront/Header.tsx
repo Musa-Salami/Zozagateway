@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   User,
-  Settings,
   Home,
   UtensilsCrossed,
   Info,
@@ -137,18 +136,6 @@ export function Header() {
             </Button>
           </Link>
 
-          {/* Admin Button */}
-          <Link href="/admin" className="hidden md:inline-flex">
-            <Button
-              size="sm"
-              className="rounded-full gap-1.5 bg-foreground text-background hover:bg-foreground/90 font-medium text-sm px-4"
-              aria-label="Admin dashboard"
-            >
-              <Settings className="h-4 w-4" />
-              Admin
-            </Button>
-          </Link>
-
           {/* User / Sign In */}
           <Link href="/auth/signin" className="hidden md:inline-flex">
             <Button variant="ghost" size="icon" aria-label="Sign in">
@@ -181,15 +168,6 @@ export function Header() {
                 </div>
 
                 <div className="mt-2 border-t pt-4">
-                  <Link
-                    href="/admin"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Button variant="outline" className="w-full mb-2">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </Button>
-                  </Link>
                   <Link
                     href="/auth/signin"
                     onClick={() => setMobileMenuOpen(false)}
